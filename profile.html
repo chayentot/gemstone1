@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
   <header class="topbar">
@@ -87,6 +87,16 @@
       </div>
     </section>
 
+
+    <section class="panel">
+      <h2>Referral program</h2>
+      <p class="muted">Share your referral code. You receive an 8% wallet commission whenever a directly referred user successfully buys a gemstone.</p>
+      <div class="referral-grid">
+        <div class="referral-code-box"><span>Your referral code</span><strong id="myReferralCode">—</strong><button id="copyReferralCode" class="primary" type="button">Copy code</button></div>
+        <form id="applyReferralForm"><label>Apply a referral code<input id="referralCodeInput" type="text" maxlength="30" placeholder="Enter code"></label><button class="primary" type="submit">Apply code</button><small class="muted">A referral code can only be applied once.</small></form>
+      </div>
+      <div class="table-wrap referral-table"><table><thead><tr><th>Date</th><th>Purchase amount</th><th>Rate</th><th>Your reward</th></tr></thead><tbody id="referralRewards"></tbody></table></div>
+    </section>
     <section class="panel">
       <h2>Recent wallet activity</h2>
       <div class="table-wrap">
@@ -110,7 +120,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=5"></script>
-  <script src="profile.js?v=5"></script>
+  <script src="common.js?v=6"></script>
+  <script src="profile.js?v=6"></script>
 </body>
 </html>

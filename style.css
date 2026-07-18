@@ -179,3 +179,5 @@ code { word-break:break-all; }
   .payment-details { grid-template-columns: 1fr; }
   .payment-heading, .admin-toolbar { align-items: stretch; flex-direction: column; }
 }
+
+.referral-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}.referral-code-box{border:1px solid rgba(108,60,255,.22);background:linear-gradient(135deg,rgba(108,60,255,.08),rgba(255,255,255,.95));border-radius:18px;padding:20px}.referral-code-box span{display:block;color:var(--muted);font-size:.85rem}.referral-code-box strong{display:block;margin:8px 0 16px;font-size:1.8rem;letter-spacing:.08em;color:var(--primary)}#applyReferralForm{display:grid;gap:12px;border:1px solid var(--line);border-radius:18px;padding:20px}.referral-table{margin-top:20px}@media(max-width:700px){.referral-grid{grid-template-columns:1fr}}
