@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Cash-In Administration</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="admin.html">🔐 Cash-In Admin</a>
+    <nav>
+      <a href="index.html">Open website</a>
+      <button id="logoutBtn" class="link-button">Logout</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="adminDenied" class="panel hidden">
+      <p class="eyebrow">ACCESS DENIED</p>
+      <h1>Administrator access required</h1>
+      <p class="muted">This page is protected by Supabase. Knowing the URL does not grant access.</p>
+    </section>
+
+    <section id="adminDashboard" class="hidden">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">PRIVATE ADMINISTRATION</p>
+          <h1>Verify GCash cash-ins</h1>
+          <p class="muted">Check the amount and reference number in your GCash records before approving.</p>
+        </div>
+        <button id="refreshAdmin" class="primary">Refresh</button>
+      </div>
+
+      <div id="adminSummary" class="summary-grid"></div>
+
+      <section class="panel">
+        <div class="admin-toolbar">
+          <h2>Pending review</h2>
+          <select id="statusFilter">
+            <option value="pending_review">Pending review</option>
+            <option value="awaiting_reference">Awaiting reference</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Submitted</th><th>User</th><th>Amount</th><th>Reference</th>
+                <th>Status</th><th>Note</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminCashIns"></tbody>
+          </table>
+        </div>
+        <p id="adminMessage" class="message"></p>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="reviewDialog">
+    <form method="dialog" class="dialog-card">
+      <h2 id="dialogTitle">Review cash-in</h2>
+      <p id="dialogDetails" class="muted"></p>
+      <label>Admin note
+        <textarea id="adminNote" rows="4" maxlength="300" placeholder="Optional approval note or rejection reason"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button id="rejectButton" value="reject" class="danger-button">Reject</button>
+        <button id="approveButton" value="approve" class="primary">Approve and credit</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="common.js?v=5"></script>
+  <script src="admin.js?v=5"></script>
+</body>
+</html>

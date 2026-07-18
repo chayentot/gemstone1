@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <header class="topbar">
@@ -29,15 +29,62 @@
     <div id="profileSummary" class="summary-grid"></div>
 
     <section class="panel">
-      <h2>Demo cash-in</h2>
-      <p class="muted">For testing only. This does not connect to a real payment provider.</p>
+      <h2>Add funds through GCash</h2>
+      <p class="muted">
+        Create a request, send the exact amount to the displayed GCash account,
+        then enter the GCash reference number. Your wallet stays pending until an administrator verifies it.
+      </p>
+
       <form id="cashInForm" class="inline-form">
         <label>Amount
-          <input id="cashInAmount" type="number" min="1" max="100000" step="0.01" required>
+          <input id="cashInAmount" type="number" min="50" max="100000" step="0.01" placeholder="500.00" required>
         </label>
-        <button class="primary" type="submit">Add demo funds</button>
+        <button class="primary" type="submit">Proceed</button>
       </form>
+
+      <div id="paymentInstructions" class="payment-box hidden">
+        <div class="payment-heading">
+          <div>
+            <p class="eyebrow">PAY WITH GCASH</p>
+            <h3>Send the exact requested amount</h3>
+          </div>
+          <span class="status waiting">Pending payment</span>
+        </div>
+
+        <div class="payment-details">
+          <div><span>Amount</span><strong id="paymentAmount">—</strong></div>
+          <div><span>GCash name</span><strong id="gcashName">—</strong></div>
+          <div><span>GCash number</span><strong id="gcashNumber">—</strong></div>
+        </div>
+
+        <p class="notice">
+          After paying in the GCash app, copy the transaction reference number and submit it below.
+          Do not submit a reference number that belongs to another payment.
+        </p>
+
+        <form id="referenceForm" class="inline-form">
+          <input id="cashInRequestId" type="hidden">
+          <label>GCash reference number
+            <input id="referenceNumber" type="text" minlength="6" maxlength="80"
+                   placeholder="Example: 1234 567 890" required>
+          </label>
+          <button class="primary" type="submit">Submit reference</button>
+        </form>
+      </div>
+
       <p id="profileMessage" class="message"></p>
+    </section>
+
+    <section class="panel">
+      <h2>Cash-in requests</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Amount</th><th>Reference</th><th>Status</th><th>Admin note</th></tr>
+          </thead>
+          <tbody id="cashInRequests"></tbody>
+        </table>
+      </div>
     </section>
 
     <section class="panel">
@@ -63,7 +110,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=3"></script>
-  <script src="profile.js?v=3"></script>
+  <script src="common.js?v=5"></script>
+  <script src="profile.js?v=5"></script>
 </body>
 </html>
