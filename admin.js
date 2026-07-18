@@ -6,11 +6,13 @@ const cashDialog = document.getElementById("reviewDialog");
 const withdrawalDialog = document.getElementById("withdrawalDialog");
 const walletAdjustDialog = document.getElementById("walletAdjustDialog");
 const deleteUserDialog = document.getElementById("deleteUserDialog");
+const gemstoneDialog = document.getElementById("gemstoneDialog");
 
 let currentCashIn = null;
 let currentWithdrawal = null;
 let currentWalletUser = null;
 let currentDeleteUser = null;
+let currentGemstone = null;
 
 function peso(value) {
   return `₱${Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
@@ -107,6 +109,68 @@ async function loadWithdrawals() {
 }
 
 
+
+async function loadGemstones() {
+  const message = document.getElementById("adminGemstonesMessage");
+  const { data: gems, error } = await db.rpc("admin_list_gemstones");
+  if (error) return showMessage(message, error.message);
+
+  document.getElementById("adminGemstones").innerHTML = gems?.length
+    ? gems.map(gem => `
+      <tr>
+        <td>
+          <div class="gem-admin-name">
+            <img src="${escapeHtml(gem.image_url || gemImage(gem.name))}"
+                 alt="" loading="lazy"
+                 onerror="this.style.display='none'">
+            <div>
+              <strong>${escapeHtml(gem.emoji || "💎")} ${escapeHtml(gem.name)}</strong>
+              <small class="block muted">${escapeHtml(gem.description || "")}</small>
+            </div>
+          </div>
+        </td>
+        <td><strong>${peso(gem.price)}</strong></td>
+        <td>${Number(gem.points_per_claim || 0).toLocaleString()}</td>
+        <td>${Number(gem.max_claims || 0).toLocaleString()}</td>
+        <td>
+          <span class="request-status ${gem.is_active ? "approved" : "rejected"}">
+            ${gem.is_active ? "Active" : "Inactive"}
+          </span>
+        </td>
+        <td>${new Date(gem.created_at).toLocaleDateString()}</td>
+        <td>
+          <button type="button" class="small-button primary edit-gemstone-btn"
+            data-gem='${escapeHtml(JSON.stringify(gem))}'>Edit</button>
+        </td>
+      </tr>`).join("")
+    : '<tr><td colspan="7">No gemstones found.</td></tr>';
+
+  document.querySelectorAll(".edit-gemstone-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      const gem = JSON.parse(button.dataset.gem);
+      openGemstoneDialog(gem);
+    });
+  });
+
+  showMessage(message, `${gems?.length || 0} gemstone plan(s) displayed.`, true);
+}
+
+function openGemstoneDialog(gem = null) {
+  currentGemstone = gem;
+  document.getElementById("gemstoneDialogTitle").textContent =
+    gem ? `Edit ${gem.name}` : "Add gemstone";
+  document.getElementById("gemstoneId").value = gem?.id || "";
+  document.getElementById("gemstoneName").value = gem?.name || "";
+  document.getElementById("gemstoneEmoji").value = gem?.emoji || "💎";
+  document.getElementById("gemstonePrice").value = gem?.price ?? "";
+  document.getElementById("gemstoneReward").value = gem?.points_per_claim ?? "";
+  document.getElementById("gemstoneMaxClaims").value = gem?.max_claims ?? "";
+  document.getElementById("gemstoneStatus").value = String(gem?.is_active ?? true);
+  document.getElementById("gemstoneDescription").value = gem?.description || "";
+  document.getElementById("gemstoneImageUrl").value = gem?.image_url || "";
+  gemstoneDialog.showModal();
+}
+
 async function loadAdminUsers() {
   const message = document.getElementById("adminUsersMessage");
   const search = document.getElementById("adminUserSearch")?.value.trim() || "";
@@ -199,7 +263,7 @@ async function loadAdminUsers() {
 
 async function loadAdmin() {
   if (!(await checkAdmin())) return;
-  await Promise.all([loadCashIns(), loadWithdrawals(), loadAdminUsers()]);
+  await Promise.all([loadCashIns(), loadWithdrawals(), loadGemstones(), loadAdminUsers()]);
 }
 
 cashDialog.addEventListener("close", async () => {
@@ -246,6 +310,71 @@ withdrawalDialog.addEventListener("close", async () => {
   if (error) return showMessage(withdrawalAdminMessage, error.message);
   showMessage(withdrawalAdminMessage, approve ? "Withdrawal approved and wallet deducted." : "Withdrawal rejected.", true);
   await loadWithdrawals();
+});
+
+
+
+document.getElementById("addGemstoneButton")?.addEventListener("click", () => {
+  openGemstoneDialog();
+});
+
+gemstoneDialog.addEventListener("close", async () => {
+  if (gemstoneDialog.returnValue !== "save") {
+    currentGemstone = null;
+    return;
+  }
+
+  const message = document.getElementById("adminGemstonesMessage");
+  const id = document.getElementById("gemstoneId").value || null;
+  const name = document.getElementById("gemstoneName").value.trim();
+  const emoji = document.getElementById("gemstoneEmoji").value.trim() || "💎";
+  const price = Number(document.getElementById("gemstonePrice").value);
+  const reward = Number(document.getElementById("gemstoneReward").value);
+  const maxClaims = Number(document.getElementById("gemstoneMaxClaims").value);
+  const isActive = document.getElementById("gemstoneStatus").value === "true";
+  const description = document.getElementById("gemstoneDescription").value.trim();
+  const imageUrl = document.getElementById("gemstoneImageUrl").value.trim() || null;
+
+  if (name.length < 2) {
+    showMessage(message, "Gemstone name must contain at least 2 characters.");
+    currentGemstone = null;
+    return;
+  }
+  if (!Number.isFinite(price) || price <= 0) {
+    showMessage(message, "Enter a valid membership price greater than zero.");
+    currentGemstone = null;
+    return;
+  }
+  if (!Number.isInteger(reward) || reward <= 0) {
+    showMessage(message, "Reward per claim must be a positive whole number.");
+    currentGemstone = null;
+    return;
+  }
+  if (!Number.isInteger(maxClaims) || maxClaims <= 0 || maxClaims > 3650) {
+    showMessage(message, "Maximum claims must be from 1 to 3,650.");
+    currentGemstone = null;
+    return;
+  }
+
+  const rpcName = id ? "admin_update_gemstone" : "admin_create_gemstone";
+  const params = {
+    p_name: name,
+    p_emoji: emoji,
+    p_description: description,
+    p_price: price,
+    p_points_per_claim: reward,
+    p_max_claims: maxClaims,
+    p_is_active: isActive,
+    p_image_url: imageUrl
+  };
+  if (id) params.p_gemstone_id = id;
+
+  const { error } = await db.rpc(rpcName, params);
+  currentGemstone = null;
+
+  if (error) return showMessage(message, error.message);
+  showMessage(message, id ? "Gemstone updated successfully." : "Gemstone added successfully.", true);
+  await loadGemstones();
 });
 
 

@@ -13,7 +13,7 @@ async function loadMemberships() {
     document.getElementById("walletBalance").textContent = money(profile.wallet_balance);
     grid.innerHTML = gemsResult.data.map(gem => `
       <article class="gem-card">
-        <div class="gem-top"><img src="${gemImage(gem.name)}" alt="${escapeHtml(gem.name)} gemstone" loading="lazy"></div>
+        <div class="gem-top"><img src="${escapeHtml(gem.image_url || gemImage(gem.name))}" alt="${escapeHtml(gem.name)} gemstone" loading="lazy"></div>
         <div class="gem-body">
           <div class="gem-title"><h2>${escapeHtml(gem.name)}</h2><span class="price">${money(gem.price)}</span></div>
           <p class="muted">${escapeHtml(gem.description)}</p>

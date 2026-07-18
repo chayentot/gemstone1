@@ -563,3 +563,34 @@ button:disabled {
 #deleteUserDialog input {
   width: 100%;
 }
+
+
+.gem-admin-name {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-width: 250px;
+}
+.gem-admin-name img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex: 0 0 auto;
+}
+.gemstone-form {
+  width: min(720px, calc(100vw - 2rem));
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .8rem 1rem;
+}
+.gemstone-form input,
+.gemstone-form select,
+.gemstone-form textarea {
+  width: 100%;
+}
+@media (max-width: 640px) {
+  .form-grid { grid-template-columns: 1fr; }
+}

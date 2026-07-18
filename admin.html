@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Payment Administration</title>
-  <link rel="stylesheet" href="style.css?v=15">
+  <link rel="stylesheet" href="style.css?v=16">
 </head>
 <body>
   <header class="topbar">
@@ -89,6 +89,36 @@
         <p id="withdrawalAdminMessage" class="message"></p>
       </section>
 
+
+      <section class="panel">
+        <div class="admin-toolbar">
+          <div>
+            <p class="eyebrow">MEMBERSHIP CATALOG</p>
+            <h2>Gemstone management</h2>
+            <p class="muted">Add new gemstones or edit the values shown on the website and APK.</p>
+          </div>
+          <button id="addGemstoneButton" class="primary" type="button">Add gemstone</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Gemstone</th>
+                <th>Price</th>
+                <th>Reward per claim</th>
+                <th>Maximum claims</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminGemstones"></tbody>
+          </table>
+        </div>
+        <p id="adminGemstonesMessage" class="message"></p>
+      </section>
+
       <section class="panel">
         <div class="admin-toolbar">
           <div>
@@ -166,6 +196,68 @@
   </dialog>
 
 
+
+  <dialog id="gemstoneDialog">
+    <form method="dialog" class="dialog-card gemstone-form">
+      <h2 id="gemstoneDialogTitle">Add gemstone</h2>
+      <input id="gemstoneId" type="hidden">
+
+      <div class="form-grid">
+        <label>Gemstone name
+          <input id="gemstoneName" type="text" maxlength="60" required
+                 placeholder="Example: Citrine">
+        </label>
+
+        <label>Emoji
+          <input id="gemstoneEmoji" type="text" maxlength="12"
+                 placeholder="💎">
+        </label>
+
+        <label>Membership price
+          <input id="gemstonePrice" type="number" min="0.01" max="10000000"
+                 step="0.01" inputmode="decimal" required>
+        </label>
+
+        <label>Reward per claim
+          <input id="gemstoneReward" type="number" min="1" max="10000000"
+                 step="1" inputmode="numeric" required>
+        </label>
+
+        <label>Maximum claims
+          <input id="gemstoneMaxClaims" type="number" min="1" max="3650"
+                 step="1" inputmode="numeric" required>
+        </label>
+
+        <label>Status
+          <select id="gemstoneStatus">
+            <option value="true">Active — visible for purchase</option>
+            <option value="false">Inactive — hidden from purchase</option>
+          </select>
+        </label>
+      </div>
+
+      <label>Description
+        <textarea id="gemstoneDescription" rows="4" maxlength="500"
+                  placeholder="Describe this membership"></textarea>
+      </label>
+
+      <label>Image URL or local filename
+        <input id="gemstoneImageUrl" type="text" maxlength="500"
+               placeholder="citrine.webp or https://example.com/citrine.webp">
+      </label>
+      <p class="muted">Leave blank to use the automatic filename based on the gemstone name.</p>
+
+      <div class="notice">
+        Editing a plan changes future purchases only. Existing purchased memberships keep their original purchase price, reward, and maximum claims.
+      </div>
+
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button value="save" class="primary">Save gemstone</button>
+      </div>
+    </form>
+  </dialog>
+
   <dialog id="walletAdjustDialog">
     <form method="dialog" class="dialog-card">
       <h2 id="walletAdjustTitle">Adjust wallet</h2>
@@ -219,7 +311,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=15"></script>
-  <script src="admin.js?v=15"></script>
+  <script src="common.js?v=16"></script>
+  <script src="admin.js?v=16"></script>
 </body>
 </html>
