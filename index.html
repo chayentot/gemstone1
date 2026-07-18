@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gemstone Membership</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">💎 Gemstone</a>
+    <nav>
+      <a class="active" href="index.html">Home</a>
+      <a href="membership.html">Membership</a>
+      <a href="profile.html">Profile</a>
+      <button id="logoutBtn" class="link-button hidden">Logout</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="authGate" class="auth-grid">
+      <article class="panel">
+        <p class="eyebrow">WELCOME</p>
+        <h1>Earn gemstone points one claim at a time.</h1>
+        <p class="muted">Buy a gemstone membership using your wallet. Each membership becomes claimable after 24 hours. A new 24-hour cycle starts only after you claim.</p>
+      </article>
+
+      <article class="panel">
+        <div class="tabs">
+          <button class="tab active" data-tab="login">Login</button>
+          <button class="tab" data-tab="register">Register</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <label>Email<input id="loginEmail" type="email" required></label>
+          <label>Password<input id="loginPassword" type="password" minlength="6" required></label>
+          <button class="primary" type="submit">Login</button>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+          <label>Full name<input id="registerName" type="text" maxlength="80" required></label>
+          <label>Email<input id="registerEmail" type="email" required></label>
+          <label>Password<input id="registerPassword" type="password" minlength="6" required></label>
+          <button class="primary" type="submit">Create account</button>
+        </form>
+        <p id="authMessage" class="message"></p>
+      </article>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">MY COLLECTION</p>
+          <h1>Your gemstones</h1>
+          <p class="muted">Claim ready rewards below. Missed days do not accumulate.</p>
+        </div>
+        <a class="primary button-link" href="membership.html">Browse memberships</a>
+      </div>
+
+      <div id="summaryCards" class="summary-grid"></div>
+      <div id="ownedGemstones" class="card-grid"></div>
+      <p id="homeMessage" class="message"></p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

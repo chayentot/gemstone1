@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Memberships · Gemstone</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">💎 Gemstone</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a class="active" href="membership.html">Membership</a>
+      <a href="profile.html">Profile</a>
+      <button id="logoutBtn" class="link-button">Logout</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <div>
+        <p class="eyebrow">MEMBERSHIPS</p>
+        <h1>Choose your gemstone</h1>
+        <p class="muted">Every plan has a unique price, points per claim, and maximum number of claims.</p>
+      </div>
+      <div class="balance-pill">Wallet: <strong id="walletBalance">—</strong></div>
+    </div>
+    <div id="membershipGrid" class="card-grid"></div>
+    <p id="membershipMessage" class="message"></p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/membership.js"></script>
+</body>
+</html>
