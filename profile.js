@@ -107,11 +107,13 @@ async function loadProfile() {
           <tr>
             <td>${new Date(row.created_at).toLocaleString()}</td>
             <td>${peso(row.amount)}</td>
+            <td>${peso(row.processing_fee)}</td>
+            <td><strong>${peso(row.net_amount)}</strong></td>
             <td><strong>${escapeHtml(row.gcash_name)}</strong><small class="block muted">${escapeHtml(row.gcash_number)}</small></td>
             <td>${statusBadge(row.status)}</td>
             <td>${escapeHtml(row.admin_note || "")}</td>
           </tr>`).join("")
-        : '<tr><td colspan="5">No withdrawal requests yet.</td></tr>';
+        : '<tr><td colspan="7">No withdrawal requests yet.</td></tr>';
 
     document.getElementById("myReferralCode").textContent = profile.referral_code || "—";
     const referralUrl = new URL("index.html", window.location.href);
@@ -219,6 +221,24 @@ document.getElementById("referenceForm")?.addEventListener("submit", async event
   await loadProfile();
 });
 
+function updateWithdrawalFeePreview() {
+  const input = document.getElementById("withdrawalAmount");
+  const preview = document.getElementById("withdrawalFeePreview");
+  if (!input || !preview) return;
+
+  const gross = Math.max(0, Number(input.value) || 0);
+  const fee = Math.round(gross * 0.06 * 100) / 100;
+  const net = Math.max(0, Math.round((gross - fee) * 100) / 100);
+
+  preview.innerHTML = `
+    <span>Requested <strong>${peso(gross)}</strong></span>
+    <span>Processing fee (6%) <strong>−${peso(fee)}</strong></span>
+    <span>You receive <strong>${peso(net)}</strong></span>`;
+}
+
+document.getElementById("withdrawalAmount")?.addEventListener("input", updateWithdrawalFeePreview);
+updateWithdrawalFeePreview();
+
 document.getElementById("withdrawalForm")?.addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -236,17 +256,26 @@ document.getElementById("withdrawalForm")?.addEventListener("submit", async even
     return showMessage(withdrawalMessage, "Enter a valid GCash mobile number.");
   }
 
-  showMessage(withdrawalMessage, "Submitting withdrawal request...");
+  const submitButton = document.getElementById("withdrawalSubmitBtn");
+  submitButton.disabled = true;
+  showMessage(withdrawalMessage, "Submitting secure withdrawal request...");
+
+  const requestKey = crypto.randomUUID();
   const { error } = await db.rpc("create_withdrawal_request", {
     p_amount: amount,
     p_gcash_name: gcashName,
-    p_gcash_number: gcashNumber
+    p_gcash_number: gcashNumber,
+    p_request_key: requestKey
   });
 
+  submitButton.disabled = false;
   if (error) return showMessage(withdrawalMessage, error.message);
 
+  const fee = Math.round(amount * 0.06 * 100) / 100;
+  const net = Math.round((amount - fee) * 100) / 100;
   event.target.reset();
-  showMessage(withdrawalMessage, "Withdrawal submitted. Wait for administrator approval.", true);
+  updateWithdrawalFeePreview();
+  showMessage(withdrawalMessage, `Withdrawal submitted. Net GCash payout after 6% fee: ${peso(net)}.`, true);
   await loadProfile();
 });
 

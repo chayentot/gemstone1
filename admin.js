@@ -53,7 +53,7 @@ async function loadCashIns() {
         <td><code>${escapeHtml(row.reference_number || "Not submitted")}</code></td>
         <td><span class="request-status ${escapeHtml(row.status)}">${escapeHtml(row.status.replaceAll("_"," "))}</span></td>
         <td>${escapeHtml(row.admin_note || "")}</td>
-        <td>${row.status === "pending_review" ? `<button class="primary cash-review-btn" data-id="${row.id}" data-amount="${row.amount}" data-reference="${escapeHtml(row.reference_number || "")}" data-user="${escapeHtml(row.full_name || "User")}">Review</button>` : "—"}</td>
+        <td>${row.status === "pending_review" ? `<button class="primary cash-review-btn" data-id="${row.id}" data-amount="${row.amount}" data-fee="${row.processing_fee}" data-net="${row.net_amount}" data-reference="${escapeHtml(row.reference_number || "")}" data-user="${escapeHtml(row.full_name || "User")}">Review</button>` : "—"}</td>
       </tr>`).join("")
     : '<tr><td colspan="7">No cash-in requests under this filter.</td></tr>';
 
@@ -80,12 +80,14 @@ async function loadWithdrawals() {
         <td>${new Date(row.created_at).toLocaleString()}</td>
         <td><strong>${escapeHtml(row.full_name || "Unnamed user")}</strong><small class="block muted">${escapeHtml(row.email || "")}</small></td>
         <td>${peso(row.amount)}</td>
+        <td>${peso(row.processing_fee)}</td>
+        <td><strong>${peso(row.net_amount)}</strong></td>
         <td><strong>${escapeHtml(row.gcash_name)}</strong><small class="block muted">${escapeHtml(row.gcash_number)}</small></td>
         <td><span class="request-status ${escapeHtml(row.status)}">${escapeHtml(row.status.replaceAll("_"," "))}</span></td>
         <td>${escapeHtml(row.admin_note || "")}</td>
-        <td>${row.status === "pending_review" ? `<button class="primary withdrawal-review-btn" data-id="${row.id}" data-amount="${row.amount}" data-name="${escapeHtml(row.gcash_name)}" data-number="${escapeHtml(row.gcash_number)}" data-user="${escapeHtml(row.full_name || "User")}">Review</button>` : "—"}</td>
+        <td>${row.status === "pending_review" ? `<button class="primary withdrawal-review-btn" data-id="${row.id}" data-amount="${row.amount}" data-fee="${row.processing_fee}" data-net="${row.net_amount}" data-name="${escapeHtml(row.gcash_name)}" data-number="${escapeHtml(row.gcash_number)}" data-user="${escapeHtml(row.full_name || "User")}">Review</button>` : "—"}</td>
       </tr>`).join("")
-    : '<tr><td colspan="7">No withdrawal requests under this filter.</td></tr>';
+    : '<tr><td colspan="9">No withdrawal requests under this filter.</td></tr>';
 
   document.querySelectorAll(".withdrawal-review-btn").forEach(button => {
     button.addEventListener("click", () => {
@@ -93,7 +95,7 @@ async function loadWithdrawals() {
       document.getElementById("withdrawalDialogTitle").textContent =
         `Review ${currentWithdrawal.user}`;
       document.getElementById("withdrawalDialogDetails").textContent =
-        `${peso(currentWithdrawal.amount)} · ${currentWithdrawal.name} · ${currentWithdrawal.number}`;
+        `${peso(currentWithdrawal.amount)} requested · ${peso(currentWithdrawal.fee)} fee · ${peso(currentWithdrawal.net)} net payout · ${currentWithdrawal.name} · ${currentWithdrawal.number}`;
       document.getElementById("withdrawalAdminNote").value = "";
       withdrawalDialog.showModal();
     });

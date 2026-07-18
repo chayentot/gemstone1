@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <header class="topbar">
@@ -131,7 +131,7 @@
         </div>
 
         <p class="muted">
-          Minimum withdrawal is <strong>₱120</strong>. The amount is deducted from your wallet only after administrator approval.
+          Minimum withdrawal is <strong>₱120</strong>. A <strong>6% processing fee</strong> is deducted from the requested amount. Your wallet is deducted only after administrator approval.
         </p>
 
         <div id="withdrawalBalanceInfo" class="withdrawal-balance-info"></div>
@@ -148,14 +148,19 @@
             <input id="withdrawalGcashNumber" type="tel" minlength="10" maxlength="15"
                    placeholder="09XXXXXXXXX" required>
           </label>
-          <button class="primary" type="submit">Request withdrawal</button>
+          <div id="withdrawalFeePreview" class="fee-preview">
+          <span>Requested <strong>₱0.00</strong></span>
+          <span>Processing fee (6%) <strong>₱0.00</strong></span>
+          <span>You receive <strong>₱0.00</strong></span>
+        </div>
+        <button id="withdrawalSubmitBtn" class="primary" type="submit">Request withdrawal</button>
         </form>
 
         <p id="withdrawalMessage" class="message"></p>
 
         <div class="table-wrap section-table">
           <table>
-            <thead><tr><th>Date</th><th>Amount</th><th>GCash account</th><th>Status</th><th>Admin note</th></tr></thead>
+            <thead><tr><th>Date</th><th>Requested</th><th>Fee</th><th>Net payout</th><th>GCash account</th><th>Status</th><th>Admin note</th></tr></thead>
             <tbody id="withdrawalRequests"></tbody>
           </table>
         </div>
@@ -267,7 +272,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=12"></script>
-  <script src="profile.js?v=12"></script>
+  <script src="common.js?v=13"></script>
+  <script src="profile.js?v=13"></script>
 </body>
 </html>

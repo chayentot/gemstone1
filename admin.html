@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Payment Administration</title>
-  <link rel="stylesheet" href="style.css?v=12">
+  <link rel="stylesheet" href="style.css?v=13">
 </head>
 <body>
   <header class="topbar">
@@ -65,7 +65,7 @@
         <div class="admin-toolbar">
           <div>
             <h2>Wallet withdrawals</h2>
-            <p class="muted">Confirm the GCash recipient and payout before approving. Approval deducts the amount from the user’s wallet.</p>
+            <p class="muted">Confirm the GCash recipient and net payout. The user’s wallet is deducted by the full requested amount; the GCash payout is the amount after the 6% fee.</p>
           </div>
           <select id="withdrawalStatusFilter">
             <option value="pending_review">Pending review</option>
@@ -79,7 +79,7 @@
           <table>
             <thead>
               <tr>
-                <th>Requested</th><th>User</th><th>Amount</th><th>GCash recipient</th>
+                <th>Requested</th><th>User</th><th>Requested</th><th>Fee</th><th>Net payout</th><th>GCash recipient</th>
                 <th>Status</th><th>Note</th><th>Action</th>
               </tr>
             </thead>
@@ -113,7 +113,7 @@
       <p id="withdrawalDialogDetails" class="muted"></p>
       <div class="notice">
         Confirm that you are ready to pay the listed GCash account before approving.
-        Approval permanently deducts the requested amount from the wallet.
+        Approval deducts the full requested amount. Pay only the displayed net amount after the 6% processing fee.
       </div>
       <label>Admin note
         <textarea id="withdrawalAdminNote" rows="4" maxlength="300"
@@ -129,7 +129,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=12"></script>
-  <script src="admin.js?v=12"></script>
+  <script src="common.js?v=13"></script>
+  <script src="admin.js?v=13"></script>
 </body>
 </html>
