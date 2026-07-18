@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Cash-In Administration</title>
-  <link rel="stylesheet" href="style.css?v=6">
+  <title>Payment Administration</title>
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="admin.html">🔐 Cash-In Admin</a>
+    <a class="brand" href="admin.html">🔐 Payment Admin</a>
     <nav>
       <a href="index.html">Open website</a>
       <button id="logoutBtn" class="link-button">Logout</button>
@@ -27,8 +27,8 @@
       <div class="hero">
         <div>
           <p class="eyebrow">PRIVATE ADMINISTRATION</p>
-          <h1>Verify GCash cash-ins</h1>
-          <p class="muted">Check the amount and reference number in your GCash records before approving.</p>
+          <h1>Review financial requests</h1>
+          <p class="muted">Verify GCash deposits and point withdrawal requests before approval.</p>
         </div>
         <button id="refreshAdmin" class="primary">Refresh</button>
       </div>
@@ -60,6 +60,34 @@
         </div>
         <p id="adminMessage" class="message"></p>
       </section>
+
+      <section class="panel">
+        <div class="admin-toolbar">
+          <div>
+            <h2>Point withdrawals</h2>
+            <p class="muted">Confirm the GCash recipient and payout before approving. Approval deducts the user’s points.</p>
+          </div>
+          <select id="withdrawalStatusFilter">
+            <option value="pending_review">Pending review</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="all">All</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Requested</th><th>User</th><th>Points</th><th>GCash recipient</th>
+                <th>Status</th><th>Note</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminWithdrawals"></tbody>
+          </table>
+        </div>
+        <p id="withdrawalAdminMessage" class="message"></p>
+      </section>
     </section>
   </main>
 
@@ -78,9 +106,30 @@
     </form>
   </dialog>
 
+
+  <dialog id="withdrawalDialog">
+    <form method="dialog" class="dialog-card">
+      <h2 id="withdrawalDialogTitle">Review withdrawal</h2>
+      <p id="withdrawalDialogDetails" class="muted"></p>
+      <div class="notice">
+        Confirm that you are ready to pay the listed GCash account before approving.
+        Approval permanently deducts the requested points.
+      </div>
+      <label>Admin note
+        <textarea id="withdrawalAdminNote" rows="4" maxlength="300"
+                  placeholder="Optional approval note or required rejection reason"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button value="reject" class="danger-button">Reject</button>
+        <button value="approve" class="primary">Approve withdrawal</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=6"></script>
-  <script src="admin.js?v=6"></script>
+  <script src="common.js?v=8"></script>
+  <script src="admin.js?v=8"></script>
 </body>
 </html>

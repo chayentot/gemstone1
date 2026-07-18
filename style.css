@@ -191,3 +191,21 @@ code { word-break:break-all; }
 }
 .secondary-button:hover { background: rgba(108,60,255,.07); }
 @media (max-width: 520px) { .referral-actions { flex-direction: column; } }
+
+.withdrawal-form {
+  display: grid;
+  grid-template-columns: .7fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 20px;
+}
+@media (max-width: 900px) {
+  .withdrawal-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 620px) {
+  .withdrawal-form {
+    grid-template-columns: 1fr;
+  }
+}

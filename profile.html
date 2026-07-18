@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <header class="topbar">
@@ -88,6 +88,42 @@
     </section>
 
 
+
+    <section class="panel">
+      <h2>Withdraw points to GCash</h2>
+      <p class="muted">
+        The minimum withdrawal is <strong>120 points</strong>. Your points are deducted only after
+        an administrator verifies and approves the request.
+      </p>
+
+      <form id="withdrawalForm" class="withdrawal-form">
+        <label>Points to withdraw
+          <input id="withdrawalPoints" type="number" min="120" step="1"
+                 placeholder="Minimum 120" required>
+        </label>
+        <label>GCash account name
+          <input id="withdrawalGcashName" type="text" minlength="2" maxlength="100"
+                 placeholder="Name registered in GCash" required>
+        </label>
+        <label>GCash mobile number
+          <input id="withdrawalGcashNumber" type="tel" minlength="10" maxlength="15"
+                 placeholder="09XXXXXXXXX" required>
+        </label>
+        <button class="primary" type="submit">Request withdrawal</button>
+      </form>
+
+      <p id="withdrawalMessage" class="message"></p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Points</th><th>GCash account</th><th>Status</th><th>Admin note</th></tr>
+          </thead>
+          <tbody id="withdrawalRequests"></tbody>
+        </table>
+      </div>
+    </section>
+
     <section class="panel">
       <h2>Referral program</h2>
       <p class="muted">Share your referral code. You receive an 8% wallet commission whenever a directly referred user successfully buys a gemstone.</p>
@@ -130,7 +166,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=7"></script>
-  <script src="profile.js?v=7"></script>
+  <script src="common.js?v=8"></script>
+  <script src="profile.js?v=8"></script>
 </body>
 </html>
