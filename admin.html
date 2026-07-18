@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Payment Administration</title>
-  <link rel="stylesheet" href="style.css?v=13">
+  <link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
   <header class="topbar">
@@ -88,6 +88,43 @@
         </div>
         <p id="withdrawalAdminMessage" class="message"></p>
       </section>
+
+      <section class="panel">
+        <div class="admin-toolbar">
+          <div>
+            <p class="eyebrow">MEMBER DIRECTORY</p>
+            <h2>Registered users</h2>
+            <p class="muted">Administrator-only overview of accounts and financial activity.</p>
+          </div>
+          <div class="user-search-controls">
+            <input id="adminUserSearch" type="search"
+                   placeholder="Search name, email, or referral code">
+            <button id="searchAdminUsers" class="primary" type="button">Search</button>
+          </div>
+        </div>
+
+        <div id="adminUserSummary" class="summary-grid"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Joined</th>
+                <th>User</th>
+                <th>Wallet</th>
+                <th>Memberships</th>
+                <th>Referrals</th>
+                <th>Pending cash-in</th>
+                <th>Pending withdrawal</th>
+                <th>Referred by</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsers"></tbody>
+          </table>
+        </div>
+        <p id="adminUsersMessage" class="message"></p>
+      </section>
     </section>
   </main>
 
@@ -129,7 +166,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=13"></script>
-  <script src="admin.js?v=13"></script>
+  <script src="common.js?v=14"></script>
+  <script src="admin.js?v=14"></script>
 </body>
 </html>

@@ -102,9 +102,59 @@ async function loadWithdrawals() {
   });
 }
 
+
+async function loadAdminUsers() {
+  const message = document.getElementById("adminUsersMessage");
+  const search = document.getElementById("adminUserSearch")?.value.trim() || "";
+
+  const [
+    { data: summaryRows, error: summaryError },
+    { data: users, error: usersError }
+  ] = await Promise.all([
+    db.rpc("admin_user_summary"),
+    db.rpc("admin_list_users", { p_search: search })
+  ]);
+
+  if (summaryError) return showMessage(message, summaryError.message);
+  if (usersError) return showMessage(message, usersError.message);
+
+  const summary = summaryRows?.[0] || {};
+  document.getElementById("adminUserSummary").innerHTML = `
+    <article class="stat-card"><span>Registered users</span><strong>${Number(summary.total_users || 0).toLocaleString()}</strong></article>
+    <article class="stat-card"><span>Total wallet liability</span><strong>${peso(summary.total_wallet_balance)}</strong></article>
+    <article class="stat-card"><span>Active memberships</span><strong>${Number(summary.active_memberships || 0).toLocaleString()}</strong></article>
+    <article class="stat-card"><span>Pending cash-ins</span><strong>${Number(summary.pending_cash_ins || 0).toLocaleString()}</strong></article>
+    <article class="stat-card"><span>Pending withdrawals</span><strong>${Number(summary.pending_withdrawals || 0).toLocaleString()}</strong></article>
+    <article class="stat-card"><span>Referral rewards issued</span><strong>${peso(summary.total_referral_rewards)}</strong></article>`;
+
+  document.getElementById("adminUsers").innerHTML = users?.length
+    ? users.map(user => `
+      <tr>
+        <td>${new Date(user.joined_at).toLocaleDateString()}</td>
+        <td>
+          <strong>${escapeHtml(user.full_name || "Unnamed member")}</strong>
+          <small class="block muted">${escapeHtml(user.email || "")}</small>
+          <small class="block muted">Code: ${escapeHtml(user.referral_code || "—")}</small>
+        </td>
+        <td><strong>${peso(user.wallet_balance)}</strong></td>
+        <td>
+          ${Number(user.active_memberships || 0).toLocaleString()} active
+          <small class="block muted">${Number(user.memberships_count || 0).toLocaleString()} total</small>
+        </td>
+        <td>${Number(user.referral_count || 0).toLocaleString()}</td>
+        <td>${peso(user.pending_cash_in_amount)}</td>
+        <td>${peso(user.pending_withdrawal_amount)}</td>
+        <td>${escapeHtml(user.referred_by_name || "—")}</td>
+        <td><span class="request-status ${user.is_admin ? "approved" : "pending_review"}">${user.is_admin ? "Admin" : "User"}</span></td>
+      </tr>`).join("")
+    : '<tr><td colspan="9">No users matched the search.</td></tr>';
+
+  showMessage(message, `${users?.length || 0} user record(s) displayed.`, true);
+}
+
 async function loadAdmin() {
   if (!(await checkAdmin())) return;
-  await Promise.all([loadCashIns(), loadWithdrawals()]);
+  await Promise.all([loadCashIns(), loadWithdrawals(), loadAdminUsers()]);
 }
 
 cashDialog.addEventListener("close", async () => {
@@ -156,5 +206,12 @@ withdrawalDialog.addEventListener("close", async () => {
 document.getElementById("refreshAdmin").addEventListener("click", loadAdmin);
 document.getElementById("statusFilter").addEventListener("change", loadCashIns);
 document.getElementById("withdrawalStatusFilter").addEventListener("change", loadWithdrawals);
+document.getElementById("searchAdminUsers")?.addEventListener("click", loadAdminUsers);
+document.getElementById("adminUserSearch")?.addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    loadAdminUsers();
+  }
+});
 
 loadAdmin();
