@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Payment Administration</title>
-  <link rel="stylesheet" href="style.css?v=14">
+  <link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
   <header class="topbar">
@@ -118,6 +118,7 @@
                 <th>Pending withdrawal</th>
                 <th>Referred by</th>
                 <th>Role</th>
+                <th>Account controls</th>
               </tr>
             </thead>
             <tbody id="adminUsers"></tbody>
@@ -164,9 +165,61 @@
     </form>
   </dialog>
 
+
+  <dialog id="walletAdjustDialog">
+    <form method="dialog" class="dialog-card">
+      <h2 id="walletAdjustTitle">Adjust wallet</h2>
+      <p id="walletAdjustDetails" class="muted"></p>
+      <label>Action
+        <select id="walletAdjustType">
+          <option value="add">Add to wallet</option>
+          <option value="deduct">Deduct from wallet</option>
+        </select>
+      </label>
+      <label>Amount
+        <input id="walletAdjustAmount" type="number" min="0.01" max="100000"
+               step="0.01" inputmode="decimal" placeholder="0.00">
+      </label>
+      <label>Reason
+        <textarea id="walletAdjustReason" rows="4" maxlength="300"
+                  placeholder="Required: explain why this balance is being adjusted"></textarea>
+      </label>
+      <div class="notice">
+        This action changes the wallet immediately and creates a permanent audit-log entry.
+      </div>
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button value="confirm" class="primary">Confirm adjustment</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="deleteUserDialog">
+    <form method="dialog" class="dialog-card">
+      <h2>Delete user account</h2>
+      <p id="deleteUserDetails" class="muted"></p>
+      <div class="danger-notice">
+        This permanently removes the authentication account and associated user records.
+        This cannot be undone. Pending financial requests must be reviewed first.
+      </div>
+      <label>Reason
+        <textarea id="deleteUserReason" rows="4" maxlength="300"
+                  placeholder="Required: describe the illegal or abusive activity"></textarea>
+      </label>
+      <label>Type DELETE to confirm
+        <input id="deleteUserConfirmation" type="text" autocomplete="off"
+               placeholder="DELETE">
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel">Cancel</button>
+        <button value="delete" class="danger-button">Permanently delete</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=14"></script>
-  <script src="admin.js?v=14"></script>
+  <script src="common.js?v=15"></script>
+  <script src="admin.js?v=15"></script>
 </body>
 </html>

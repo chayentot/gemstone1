@@ -4,9 +4,13 @@ const adminMessage = document.getElementById("adminMessage");
 const withdrawalAdminMessage = document.getElementById("withdrawalAdminMessage");
 const cashDialog = document.getElementById("reviewDialog");
 const withdrawalDialog = document.getElementById("withdrawalDialog");
+const walletAdjustDialog = document.getElementById("walletAdjustDialog");
+const deleteUserDialog = document.getElementById("deleteUserDialog");
 
 let currentCashIn = null;
 let currentWithdrawal = null;
+let currentWalletUser = null;
+let currentDeleteUser = null;
 
 function peso(value) {
   return `₱${Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
@@ -146,8 +150,49 @@ async function loadAdminUsers() {
         <td>${peso(user.pending_withdrawal_amount)}</td>
         <td>${escapeHtml(user.referred_by_name || "—")}</td>
         <td><span class="request-status ${user.is_admin ? "approved" : "pending_review"}">${user.is_admin ? "Admin" : "User"}</span></td>
+        <td>
+          ${user.is_admin ? '<span class="muted">Protected administrator</span>' : `
+            <div class="admin-user-actions">
+              <button type="button" class="small-button wallet-adjust-btn"
+                      data-id="${user.user_id}"
+                      data-name="${escapeHtml(user.full_name || "Unnamed member")}"
+                      data-email="${escapeHtml(user.email || "")}"
+                      data-balance="${Number(user.wallet_balance || 0)}">Adjust wallet</button>
+              <button type="button" class="small-button danger-button user-delete-btn"
+                      data-id="${user.user_id}"
+                      data-name="${escapeHtml(user.full_name || "Unnamed member")}"
+                      data-email="${escapeHtml(user.email || "")}"
+                      data-pending-cash="${Number(user.pending_cash_in_amount || 0)}"
+                      data-pending-withdrawal="${Number(user.pending_withdrawal_amount || 0)}">Delete</button>
+            </div>`}
+        </td>
       </tr>`).join("")
-    : '<tr><td colspan="9">No users matched the search.</td></tr>';
+    : '<tr><td colspan="10">No users matched the search.</td></tr>';
+
+  document.querySelectorAll(".wallet-adjust-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      currentWalletUser = { ...button.dataset };
+      document.getElementById("walletAdjustTitle").textContent =
+        `Adjust ${currentWalletUser.name}'s wallet`;
+      document.getElementById("walletAdjustDetails").textContent =
+        `${currentWalletUser.email} · Current wallet: ${peso(currentWalletUser.balance)}`;
+      document.getElementById("walletAdjustType").value = "add";
+      document.getElementById("walletAdjustAmount").value = "";
+      document.getElementById("walletAdjustReason").value = "";
+      walletAdjustDialog.showModal();
+    });
+  });
+
+  document.querySelectorAll(".user-delete-btn").forEach(button => {
+    button.addEventListener("click", () => {
+      currentDeleteUser = { ...button.dataset };
+      document.getElementById("deleteUserDetails").textContent =
+        `${currentDeleteUser.name} · ${currentDeleteUser.email}`;
+      document.getElementById("deleteUserReason").value = "";
+      document.getElementById("deleteUserConfirmation").value = "";
+      deleteUserDialog.showModal();
+    });
+  });
 
   showMessage(message, `${users?.length || 0} user record(s) displayed.`, true);
 }
@@ -202,6 +247,74 @@ withdrawalDialog.addEventListener("close", async () => {
   showMessage(withdrawalAdminMessage, approve ? "Withdrawal approved and wallet deducted." : "Withdrawal rejected.", true);
   await loadWithdrawals();
 });
+
+
+walletAdjustDialog.addEventListener("close", async () => {
+  if (!currentWalletUser || walletAdjustDialog.returnValue !== "confirm") return;
+  const action = document.getElementById("walletAdjustType").value;
+  const amount = Number(document.getElementById("walletAdjustAmount").value);
+  const reason = document.getElementById("walletAdjustReason").value.trim();
+  const message = document.getElementById("adminUsersMessage");
+
+  if (!Number.isFinite(amount) || amount <= 0 || amount > 100000) {
+    showMessage(message, "Enter an amount from ₱0.01 to ₱100,000.00.");
+    currentWalletUser = null;
+    return;
+  }
+  if (reason.length < 5) {
+    showMessage(message, "A clear adjustment reason of at least 5 characters is required.");
+    currentWalletUser = null;
+    return;
+  }
+
+  const signedAmount = action === "deduct" ? -amount : amount;
+  const { data, error } = await db.rpc("admin_adjust_user_wallet", {
+    p_target_user_id: currentWalletUser.id,
+    p_adjustment: signedAmount,
+    p_reason: reason
+  });
+  currentWalletUser = null;
+
+  if (error) return showMessage(message, error.message);
+  showMessage(message, `Wallet updated. New balance: ${peso(data)}`, true);
+  await loadAdminUsers();
+});
+
+deleteUserDialog.addEventListener("close", async () => {
+  if (!currentDeleteUser || deleteUserDialog.returnValue !== "delete") return;
+  const reason = document.getElementById("deleteUserReason").value.trim();
+  const confirmation = document.getElementById("deleteUserConfirmation").value.trim();
+  const message = document.getElementById("adminUsersMessage");
+
+  if (confirmation !== "DELETE") {
+    showMessage(message, "Account deletion cancelled: confirmation text did not match DELETE.");
+    currentDeleteUser = null;
+    return;
+  }
+  if (reason.length < 10) {
+    showMessage(message, "A detailed deletion reason of at least 10 characters is required.");
+    currentDeleteUser = null;
+    return;
+  }
+  if (Number(currentDeleteUser.pendingCash) > 0 || Number(currentDeleteUser.pendingWithdrawal) > 0) {
+    showMessage(message, "Review this user's pending cash-in or withdrawal requests before deleting the account.");
+    currentDeleteUser = null;
+    return;
+  }
+
+  const deletingName = currentDeleteUser.name;
+  const { error } = await db.rpc("admin_delete_user_account", {
+    p_target_user_id: currentDeleteUser.id,
+    p_reason: reason,
+    p_confirmation: confirmation
+  });
+  currentDeleteUser = null;
+
+  if (error) return showMessage(message, error.message);
+  showMessage(message, `${deletingName}'s account was permanently deleted.`, true);
+  await loadAdminUsers();
+});
+
 
 document.getElementById("refreshAdmin").addEventListener("click", loadAdmin);
 document.getElementById("statusFilter").addEventListener("change", loadCashIns);

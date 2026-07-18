@@ -537,3 +537,29 @@ button:disabled {
     width: 100%;
   }
 }
+
+
+.admin-user-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .45rem;
+  min-width: 190px;
+}
+.small-button {
+  padding: .55rem .7rem;
+  font-size: .82rem;
+  white-space: nowrap;
+}
+.danger-notice {
+  border: 1px solid #dc2626;
+  background: rgba(220, 38, 38, .08);
+  border-radius: 12px;
+  padding: .9rem;
+  margin: .75rem 0;
+  font-weight: 600;
+}
+#walletAdjustDialog input,
+#walletAdjustDialog select,
+#deleteUserDialog input {
+  width: 100%;
+}
