@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
   <header class="topbar">
@@ -92,7 +92,17 @@
       <h2>Referral program</h2>
       <p class="muted">Share your referral code. You receive an 8% wallet commission whenever a directly referred user successfully buys a gemstone.</p>
       <div class="referral-grid">
-        <div class="referral-code-box"><span>Your referral code</span><strong id="myReferralCode">—</strong><button id="copyReferralCode" class="primary" type="button">Copy code</button></div>
+        <div class="referral-code-box">
+          <span>Your referral code</span>
+          <strong id="myReferralCode">—</strong>
+          <label>Your referral link
+            <input id="myReferralLink" type="text" readonly value="Loading…">
+          </label>
+          <div class="referral-actions">
+            <button id="copyReferralLink" class="primary" type="button">Copy referral link</button>
+            <button id="shareReferralLink" class="secondary-button" type="button">Share</button>
+          </div>
+        </div>
         <form id="applyReferralForm"><label>Apply a referral code<input id="referralCodeInput" type="text" maxlength="30" placeholder="Enter code"></label><button class="primary" type="submit">Apply code</button><small class="muted">A referral code can only be applied once.</small></form>
       </div>
       <div class="table-wrap referral-table"><table><thead><tr><th>Date</th><th>Purchase amount</th><th>Rate</th><th>Your reward</th></tr></thead><tbody id="referralRewards"></tbody></table></div>
@@ -120,7 +130,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=6"></script>
-  <script src="profile.js?v=6"></script>
+  <script src="common.js?v=7"></script>
+  <script src="profile.js?v=7"></script>
 </body>
 </html>
