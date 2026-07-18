@@ -1,3 +1,33 @@
+
+function openProfilePanel(panelId) {
+  document.querySelectorAll(".profile-panel").forEach(panel => {
+    panel.classList.toggle("active-panel", panel.id === panelId);
+  });
+
+  document.querySelectorAll(".profile-action").forEach(button => {
+    button.classList.toggle("active", button.dataset.panel === panelId);
+  });
+
+  const panel = document.getElementById(panelId);
+  if (panel) {
+    window.scrollTo({
+      top: Math.max(0, panel.offsetTop - 110),
+      behavior: "smooth"
+    });
+  }
+
+  sessionStorage.setItem("profileActivePanel", panelId);
+}
+
+document.querySelectorAll(".profile-action").forEach(button => {
+  button.addEventListener("click", () => openProfilePanel(button.dataset.panel));
+});
+
+const rememberedPanel = sessionStorage.getItem("profileActivePanel");
+if (rememberedPanel && document.getElementById(rememberedPanel)) {
+  openProfilePanel(rememberedPanel);
+}
+
 const profileMessage=document.getElementById("profileMessage");
 const cfg=window.LAUNCHBOARD_CONFIG||{};let currentUser;
 function statusBadge(status){const labels={awaiting_reference:"Awaiting reference",pending_review:"Pending review",approved:"Approved",rejected:"Rejected",cancelled:"Cancelled"};return `<span class="request-status ${escapeHtml(status)}">${escapeHtml(labels[status]||status)}</span>`;}

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
   <header class="topbar">
@@ -18,155 +18,243 @@
   </header>
 
   <main class="container">
-    <div class="hero">
+    <div class="hero profile-hero">
       <div>
-        <p class="eyebrow">ACCOUNT</p>
-        <h1>Your profile and wallet</h1>
+        <p class="eyebrow">MY ACCOUNT</p>
+        <h1>Wallet and rewards</h1>
         <p class="muted" id="profileEmail"></p>
       </div>
     </div>
 
     <div id="profileSummary" class="summary-grid"></div>
 
-    <section class="panel">
-      <h2>Add funds through GCash</h2>
-      <p class="muted">
-        Create a request, send the exact amount to the displayed GCash account,
-        then enter the GCash reference number. Your wallet stays pending until an administrator verifies it.
-      </p>
+    <section class="profile-actions" aria-label="Profile actions">
+      <button class="profile-action active" type="button" data-panel="fundsPanel">
+        <span class="action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H18a3 3 0 0 1 3 3v1h-5.5A3.5 3.5 0 0 0 12 12.5v1a3.5 3.5 0 0 0 3.5 3.5H21v1a3 3 0 0 1-3 3H5.5A2.5 2.5 0 0 1 3 18.5v-11Z"/><path d="M15.5 11H22v4h-6.5a2 2 0 0 1-2-2v0a2 2 0 0 1 2-2Z"/></svg>
+        </span>
+        <span><strong>Add Funds</strong><small>GCash cash-in</small></span>
+      </button>
 
-      <form id="cashInForm" class="inline-form">
-        <label>Amount
-          <input id="cashInAmount" type="number" min="50" max="100000" step="0.01" placeholder="500.00" required>
-        </label>
-        <button class="primary" type="submit">Proceed</button>
-      </form>
+      <button class="profile-action" type="button" data-panel="withdrawalPanel">
+        <span class="action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        </span>
+        <span><strong>Withdrawal</strong><small>Request payout</small></span>
+      </button>
 
-      <div id="paymentInstructions" class="payment-box hidden">
-        <div class="payment-heading">
+      <button class="profile-action" type="button" data-panel="referralPanel">
+        <span class="action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="7" r="2.5"/><path d="M2.5 19c.6-3.3 2.5-5 5.5-5s4.9 1.7 5.5 5"/><path d="M14 14c3.8-.4 6.2 1.2 7 4"/></svg>
+        </span>
+        <span><strong>Referral</strong><small>Share and earn</small></span>
+      </button>
+
+      <button class="profile-action" type="button" data-panel="walletPanel">
+        <span class="action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 5h14a2 2 0 0 1 2 2v12H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M14 10h8v5h-8a2.5 2.5 0 0 1 0-5Z"/></svg>
+        </span>
+        <span><strong>Wallet Activity</strong><small>Cash transactions</small></span>
+      </button>
+
+      <button class="profile-action" type="button" data-panel="pointsPanel">
+        <span class="action-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="m12 2 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 16.3 6.4 19.2 7.5 13 3 8.6l6.2-.9L12 2Z"/></svg>
+        </span>
+        <span><strong>Point Activity</strong><small>Rewards history</small></span>
+      </button>
+    </section>
+
+    <section id="fundsPanel" class="profile-panel active-panel">
+      <div class="panel">
+        <div class="section-title-row">
+          <span class="section-logo">₱</span>
           <div>
-            <p class="eyebrow">PAY WITH GCASH</p>
-            <h3>Send the exact requested amount</h3>
+            <p class="eyebrow">GCASH CASH-IN</p>
+            <h2>Add funds</h2>
           </div>
-          <span class="status waiting">Pending payment</span>
         </div>
 
-        <div class="payment-details">
-          <div><span>Amount</span><strong id="paymentAmount">—</strong></div>
-          <div><span>GCash name</span><strong id="gcashName">—</strong></div>
-          <div><span>GCash number</span><strong id="gcashNumber">—</strong></div>
-        </div>
-
-        <p class="notice">
-          After paying in the GCash app, copy the transaction reference number and submit it below.
-          Do not submit a reference number that belongs to another payment.
+        <p class="muted">
+          Create a request, send the exact amount to the displayed GCash account,
+          then enter the GCash reference number. Your wallet stays pending until an administrator verifies it.
         </p>
 
-        <form id="referenceForm" class="inline-form">
-          <input id="cashInRequestId" type="hidden">
-          <label>GCash reference number
-            <input id="referenceNumber" type="text" minlength="6" maxlength="80"
-                   placeholder="Example: 1234 567 890" required>
+        <form id="cashInForm" class="inline-form">
+          <label>Amount
+            <input id="cashInAmount" type="number" min="50" max="100000" step="0.01" placeholder="500.00" required>
           </label>
-          <button class="primary" type="submit">Submit reference</button>
+          <button class="primary" type="submit">Proceed</button>
         </form>
-      </div>
 
-      <p id="profileMessage" class="message"></p>
-    </section>
+        <div id="paymentInstructions" class="payment-box hidden">
+          <div class="payment-heading">
+            <div>
+              <p class="eyebrow">PAY WITH GCASH</p>
+              <h3>Send the exact requested amount</h3>
+            </div>
+            <span class="status waiting">Pending payment</span>
+          </div>
 
-    <section class="panel">
-      <h2>Cash-in requests</h2>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Date</th><th>Amount</th><th>Reference</th><th>Status</th><th>Admin note</th></tr>
-          </thead>
-          <tbody id="cashInRequests"></tbody>
-        </table>
-      </div>
-    </section>
+          <div class="payment-details">
+            <div><span>Amount</span><strong id="paymentAmount">—</strong></div>
+            <div><span>GCash name</span><strong id="gcashName">—</strong></div>
+            <div><span>GCash number</span><strong id="gcashNumber">—</strong></div>
+          </div>
 
+          <p class="notice">
+            After paying in the GCash app, copy the transaction reference number and submit it below.
+          </p>
 
+          <form id="referenceForm" class="inline-form">
+            <input id="cashInRequestId" type="hidden">
+            <label>GCash reference number
+              <input id="referenceNumber" type="text" minlength="6" maxlength="80"
+                     placeholder="Example: 1234 567 890" required>
+            </label>
+            <button class="primary" type="submit">Submit reference</button>
+          </form>
+        </div>
 
-    <section class="panel">
-      <h2>Withdraw points to GCash</h2>
-      <p class="muted">
-        The minimum withdrawal is <strong>120 points</strong>. Your points are deducted only after
-        an administrator verifies and approves the request.
-      </p>
+        <p id="profileMessage" class="message"></p>
 
-      <form id="withdrawalForm" class="withdrawal-form">
-        <label>Points to withdraw
-          <input id="withdrawalPoints" type="number" min="120" step="1"
-                 placeholder="Minimum 120" required>
-        </label>
-        <label>GCash account name
-          <input id="withdrawalGcashName" type="text" minlength="2" maxlength="100"
-                 placeholder="Name registered in GCash" required>
-        </label>
-        <label>GCash mobile number
-          <input id="withdrawalGcashNumber" type="tel" minlength="10" maxlength="15"
-                 placeholder="09XXXXXXXXX" required>
-        </label>
-        <button class="primary" type="submit">Request withdrawal</button>
-      </form>
-
-      <p id="withdrawalMessage" class="message"></p>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Date</th><th>Points</th><th>GCash account</th><th>Status</th><th>Admin note</th></tr>
-          </thead>
-          <tbody id="withdrawalRequests"></tbody>
-        </table>
+        <div class="table-wrap section-table">
+          <table>
+            <thead><tr><th>Date</th><th>Amount</th><th>Reference</th><th>Status</th><th>Admin note</th></tr></thead>
+            <tbody id="cashInRequests"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <section class="panel">
-      <h2>Referral program</h2>
-      <p class="muted">Share your referral code. You receive an 8% wallet commission whenever a directly referred user successfully buys a gemstone.</p>
-      <div class="referral-grid">
-        <div class="referral-code-box">
-          <span>Your referral code</span>
-          <strong id="myReferralCode">—</strong>
-          <label>Your referral link
-            <input id="myReferralLink" type="text" readonly value="Loading…">
-          </label>
-          <div class="referral-actions">
-            <button id="copyReferralLink" class="primary" type="button">Copy referral link</button>
-            <button id="shareReferralLink" class="secondary-button" type="button">Share</button>
+    <section id="withdrawalPanel" class="profile-panel">
+      <div class="panel">
+        <div class="section-title-row">
+          <span class="section-logo">↧</span>
+          <div>
+            <p class="eyebrow">PAYOUT REQUEST</p>
+            <h2>Withdraw points</h2>
           </div>
         </div>
-        <form id="applyReferralForm"><label>Apply a referral code<input id="referralCodeInput" type="text" maxlength="30" placeholder="Enter code"></label><button class="primary" type="submit">Apply code</button><small class="muted">A referral code can only be applied once.</small></form>
-      </div>
-      <div class="table-wrap referral-table"><table><thead><tr><th>Date</th><th>Purchase amount</th><th>Rate</th><th>Your reward</th></tr></thead><tbody id="referralRewards"></tbody></table></div>
-    </section>
-    <section class="panel">
-      <h2>Recent wallet activity</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Details</th></tr></thead>
-          <tbody id="walletTransactions"></tbody>
-        </table>
+
+        <p class="muted">
+          Minimum withdrawal is <strong>120 points</strong>. Points are deducted only after administrator approval.
+        </p>
+
+        <form id="withdrawalForm" class="withdrawal-form">
+          <label>Points to withdraw
+            <input id="withdrawalPoints" type="number" min="120" step="1" placeholder="Minimum 120" required>
+          </label>
+          <label>GCash account name
+            <input id="withdrawalGcashName" type="text" minlength="2" maxlength="100"
+                   placeholder="Name registered in GCash" required>
+          </label>
+          <label>GCash mobile number
+            <input id="withdrawalGcashNumber" type="tel" minlength="10" maxlength="15"
+                   placeholder="09XXXXXXXXX" required>
+          </label>
+          <button class="primary" type="submit">Request withdrawal</button>
+        </form>
+
+        <p id="withdrawalMessage" class="message"></p>
+
+        <div class="table-wrap section-table">
+          <table>
+            <thead><tr><th>Date</th><th>Points</th><th>GCash account</th><th>Status</th><th>Admin note</th></tr></thead>
+            <tbody id="withdrawalRequests"></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <section class="panel">
-      <h2>Recent point activity</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Date</th><th>Type</th><th>Points</th><th>Details</th></tr></thead>
-          <tbody id="pointTransactions"></tbody>
-        </table>
+    <section id="referralPanel" class="profile-panel">
+      <div class="panel">
+        <div class="section-title-row">
+          <span class="section-logo">↗</span>
+          <div>
+            <p class="eyebrow">SHARE AND EARN</p>
+            <h2>Referral program</h2>
+          </div>
+        </div>
+
+        <p class="muted">
+          Share your referral link. You receive an 8% wallet commission whenever a directly referred user buys a gemstone.
+        </p>
+
+        <div class="referral-grid">
+          <div class="referral-code-box">
+            <span>Your referral code</span>
+            <strong id="myReferralCode">—</strong>
+            <label>Your referral link
+              <input id="myReferralLink" type="text" readonly>
+            </label>
+            <div class="referral-actions">
+              <button id="copyReferralCode" class="secondary-button" type="button">Copy code</button>
+              <button id="copyReferralLink" class="primary" type="button">Copy link</button>
+              <button id="shareReferralLink" class="secondary-button" type="button">Share</button>
+            </div>
+          </div>
+
+          <form id="applyReferralForm">
+            <label>Apply a referral code
+              <input id="referralCodeInput" type="text" maxlength="30" placeholder="Enter code">
+            </label>
+            <button class="primary" type="submit">Apply code</button>
+            <small class="muted">A referral code can only be applied once.</small>
+          </form>
+        </div>
+
+        <div class="table-wrap referral-table">
+          <table>
+            <thead><tr><th>Date</th><th>Purchase amount</th><th>Rate</th><th>Your reward</th></tr></thead>
+            <tbody id="referralRewards"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="walletPanel" class="profile-panel">
+      <div class="panel">
+        <div class="section-title-row">
+          <span class="section-logo">▣</span>
+          <div>
+            <p class="eyebrow">TRANSACTION HISTORY</p>
+            <h2>Recent wallet activity</h2>
+          </div>
+        </div>
+
+        <div class="table-wrap section-table">
+          <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Details</th></tr></thead>
+            <tbody id="walletTransactions"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="pointsPanel" class="profile-panel">
+      <div class="panel">
+        <div class="section-title-row">
+          <span class="section-logo">★</span>
+          <div>
+            <p class="eyebrow">REWARD HISTORY</p>
+            <h2>Recent point activity</h2>
+          </div>
+        </div>
+
+        <div class="table-wrap section-table">
+          <table>
+            <thead><tr><th>Date</th><th>Type</th><th>Points</th><th>Details</th></tr></thead>
+            <tbody id="pointTransactions"></tbody>
+          </table>
+        </div>
       </div>
     </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=8"></script>
-  <script src="profile.js?v=8"></script>
+  <script src="common.js?v=9"></script>
+  <script src="profile.js?v=9"></script>
 </body>
 </html>
