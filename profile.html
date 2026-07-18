@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=9">
+  <link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
   <header class="topbar">
@@ -204,11 +204,48 @@
           </form>
         </div>
 
-        <div class="table-wrap referral-table">
-          <table>
-            <thead><tr><th>Date</th><th>Purchase amount</th><th>Rate</th><th>Your reward</th></tr></thead>
-            <tbody id="referralRewards"></tbody>
-          </table>
+        <div id="referralSummary" class="referral-summary-grid"></div>
+
+        <div class="referral-subsection">
+          <div class="section-title-row compact-title">
+            <span class="section-logo small-logo">👥</span>
+            <div>
+              <p class="eyebrow">YOUR NETWORK</p>
+              <h3>Users under your referral code</h3>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Date joined</th>
+                  <th>Gemstones purchased</th>
+                  <th>Total purchased</th>
+                  <th>Your reward</th>
+                </tr>
+              </thead>
+              <tbody id="referralUsers"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="referral-subsection">
+          <div class="section-title-row compact-title">
+            <span class="section-logo small-logo">₱</span>
+            <div>
+              <p class="eyebrow">COMMISSION HISTORY</p>
+              <h3>Referral rewards</h3>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Purchase amount</th><th>Rate</th><th>Your reward</th></tr></thead>
+              <tbody id="referralRewards"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
@@ -254,7 +291,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=9"></script>
-  <script src="profile.js?v=9"></script>
+  <script src="common.js?v=10"></script>
+  <script src="profile.js?v=10"></script>
 </body>
 </html>
