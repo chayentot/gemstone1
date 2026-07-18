@@ -1,3 +1,25 @@
+# Flat-folder GitHub Pages version
+
+Upload every file in this folder directly to the root of your GitHub repository.
+Do not create `css` or `js` folders for this version.
+
+After upload, GitHub should show:
+
+- index.html
+- membership.html
+- profile.html
+- style.css
+- config.js
+- common.js
+- home.js
+- membership.js
+- profile.js
+- supabase_schema.sql
+- .nojekyll
+
+The `?v=2` added to CSS and JavaScript references helps bypass the browser cache.
+
+
 # Gemstone Membership — GitHub Pages + Supabase
 
 This version is a real static website for GitHub Pages. It contains `index.html`, so GitHub will show the website instead of displaying this README.
