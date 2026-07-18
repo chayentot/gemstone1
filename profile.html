@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profile · Gemstone</title>
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body>
   <header class="topbar">
@@ -21,7 +21,7 @@
     <div class="hero profile-hero">
       <div>
         <p class="eyebrow">MY ACCOUNT</p>
-        <h1>Wallet and rewards</h1>
+        <h1>Your wallet</h1>
         <p class="muted" id="profileEmail"></p>
       </div>
     </div>
@@ -55,13 +55,6 @@
           <svg viewBox="0 0 24 24"><path d="M4 5h14a2 2 0 0 1 2 2v12H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"/><path d="M14 10h8v5h-8a2.5 2.5 0 0 1 0-5Z"/></svg>
         </span>
         <span><strong>Wallet Activity</strong><small>Cash transactions</small></span>
-      </button>
-
-      <button class="profile-action" type="button" data-panel="pointsPanel">
-        <span class="action-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><path d="m12 2 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 16.3 6.4 19.2 7.5 13 3 8.6l6.2-.9L12 2Z"/></svg>
-        </span>
-        <span><strong>Point Activity</strong><small>Rewards history</small></span>
       </button>
     </section>
 
@@ -138,14 +131,14 @@
         </div>
 
         <p class="muted">
-          Minimum withdrawal is <strong>120 points</strong>. Points are deducted only after administrator approval.
+          Minimum withdrawal is <strong>₱120</strong>. The amount is deducted from your wallet only after administrator approval.
         </p>
 
         <div id="withdrawalBalanceInfo" class="withdrawal-balance-info"></div>
 
         <form id="withdrawalForm" class="withdrawal-form">
-          <label>Points to withdraw
-            <input id="withdrawalPoints" type="number" min="120" step="1" placeholder="Minimum 120" required>
+          <label>Amount to withdraw
+            <input id="withdrawalAmount" type="number" min="120" step="0.01" placeholder="Minimum ₱120" required>
           </label>
           <label>GCash account name
             <input id="withdrawalGcashName" type="text" minlength="2" maxlength="100"
@@ -162,7 +155,7 @@
 
         <div class="table-wrap section-table">
           <table>
-            <thead><tr><th>Date</th><th>Points</th><th>GCash account</th><th>Status</th><th>Admin note</th></tr></thead>
+            <thead><tr><th>Date</th><th>Amount</th><th>GCash account</th><th>Status</th><th>Admin note</th></tr></thead>
             <tbody id="withdrawalRequests"></tbody>
           </table>
         </div>
@@ -180,7 +173,7 @@
         </div>
 
         <p class="muted">
-          Share your referral link. You receive an 8% wallet commission whenever a directly referred user buys a gemstone.
+          Share your referral link. You receive an 8% commission directly in your wallet whenever a referred user buys a gemstone.
         </p>
 
         <div class="referral-grid">
@@ -270,30 +263,11 @@
         </div>
       </div>
     </section>
-
-    <section id="pointsPanel" class="profile-panel">
-      <div class="panel">
-        <div class="section-title-row">
-          <span class="section-logo">★</span>
-          <div>
-            <p class="eyebrow">REWARD HISTORY</p>
-            <h2>Recent point activity</h2>
-          </div>
-        </div>
-
-        <div class="table-wrap section-table">
-          <table>
-            <thead><tr><th>Date</th><th>Type</th><th>Points</th><th>Details</th></tr></thead>
-            <tbody id="pointTransactions"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=11"></script>
-  <script src="profile.js?v=11"></script>
+  <script src="common.js?v=12"></script>
+  <script src="profile.js?v=12"></script>
 </body>
 </html>

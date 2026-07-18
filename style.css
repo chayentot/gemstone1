@@ -459,3 +459,31 @@ code { word-break:break-all; }
 @media (max-width: 560px) {
   .referral-summary-grid { grid-template-columns: 1fr; }
 }
+
+.profile-actions {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.wallet-main-card {
+  grid-column: span 2;
+}
+.wallet-main-card strong {
+  font-size: 2rem;
+}
+.wallet-main-card small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+}
+@media (max-width: 760px) {
+  .profile-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .wallet-main-card {
+    grid-column: span 1;
+  }
+}
+@media (max-width: 440px) {
+  .profile-actions {
+    grid-template-columns: 1fr;
+  }
+}

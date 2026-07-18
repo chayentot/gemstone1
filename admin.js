@@ -79,11 +79,11 @@ async function loadWithdrawals() {
       <tr>
         <td>${new Date(row.created_at).toLocaleString()}</td>
         <td><strong>${escapeHtml(row.full_name || "Unnamed user")}</strong><small class="block muted">${escapeHtml(row.email || "")}</small></td>
-        <td>${points(row.points_amount)}</td>
+        <td>${peso(row.amount)}</td>
         <td><strong>${escapeHtml(row.gcash_name)}</strong><small class="block muted">${escapeHtml(row.gcash_number)}</small></td>
         <td><span class="request-status ${escapeHtml(row.status)}">${escapeHtml(row.status.replaceAll("_"," "))}</span></td>
         <td>${escapeHtml(row.admin_note || "")}</td>
-        <td>${row.status === "pending_review" ? `<button class="primary withdrawal-review-btn" data-id="${row.id}" data-points="${row.points_amount}" data-name="${escapeHtml(row.gcash_name)}" data-number="${escapeHtml(row.gcash_number)}" data-user="${escapeHtml(row.full_name || "User")}">Review</button>` : "—"}</td>
+        <td>${row.status === "pending_review" ? `<button class="primary withdrawal-review-btn" data-id="${row.id}" data-amount="${row.amount}" data-name="${escapeHtml(row.gcash_name)}" data-number="${escapeHtml(row.gcash_number)}" data-user="${escapeHtml(row.full_name || "User")}">Review</button>` : "—"}</td>
       </tr>`).join("")
     : '<tr><td colspan="7">No withdrawal requests under this filter.</td></tr>';
 
@@ -93,7 +93,7 @@ async function loadWithdrawals() {
       document.getElementById("withdrawalDialogTitle").textContent =
         `Review ${currentWithdrawal.user}`;
       document.getElementById("withdrawalDialogDetails").textContent =
-        `${Number(currentWithdrawal.points).toLocaleString()} points · ${currentWithdrawal.name} · ${currentWithdrawal.number}`;
+        `${peso(currentWithdrawal.amount)} · ${currentWithdrawal.name} · ${currentWithdrawal.number}`;
       document.getElementById("withdrawalAdminNote").value = "";
       withdrawalDialog.showModal();
     });
@@ -147,7 +147,7 @@ withdrawalDialog.addEventListener("close", async () => {
   currentWithdrawal = null;
 
   if (error) return showMessage(withdrawalAdminMessage, error.message);
-  showMessage(withdrawalAdminMessage, approve ? "Withdrawal approved and points deducted." : "Withdrawal rejected.", true);
+  showMessage(withdrawalAdminMessage, approve ? "Withdrawal approved and wallet deducted." : "Withdrawal rejected.", true);
   await loadWithdrawals();
 });
 

@@ -46,7 +46,6 @@ async function loadProfile() {
     const [
       profile,
       walletResult,
-      pointResult,
       memberResult,
       cashInResult,
       rewardResult,
@@ -57,8 +56,6 @@ async function loadProfile() {
     ] = await Promise.all([
       getProfile(currentUser.id),
       db.from("wallet_transactions").select("*").eq("user_id", currentUser.id)
-        .order("created_at", { ascending: false }).limit(30),
-      db.from("point_transactions").select("*").eq("user_id", currentUser.id)
         .order("created_at", { ascending: false }).limit(30),
       db.from("user_memberships").select("id,status").eq("user_id", currentUser.id),
       db.from("cash_in_requests").select("*").eq("user_id", currentUser.id)
@@ -73,29 +70,35 @@ async function loadProfile() {
     ]);
 
     for (const result of [
-      walletResult, pointResult, memberResult, cashInResult, rewardResult,
+      walletResult, memberResult, cashInResult, rewardResult,
       withdrawalResult, referralSummaryResult, referralUsersResult, withdrawalBalanceResult
     ]) {
       if (result.error) throw result.error;
     }
 
     document.getElementById("profileSummary").innerHTML = `
-      <article class="stat-card"><span>Wallet balance</span><strong>${peso(profile.wallet_balance)}</strong></article>
-      <article class="stat-card"><span>Available points</span><strong>${points(profile.points_balance)}</strong></article>
-      <article class="stat-card"><span>Total memberships</span><strong>${memberResult.data.length}</strong></article>`;
+      <article class="stat-card wallet-main-card">
+        <span>Wallet balance</span>
+        <strong>${peso(profile.wallet_balance)}</strong>
+        <small>Cash-ins, gemstone rewards, and referral commissions</small>
+      </article>
+      <article class="stat-card">
+        <span>Total memberships</span>
+        <strong>${memberResult.data.length}</strong>
+      </article>`;
 
     const withdrawalBalance = withdrawalBalanceResult.data?.[0] || {
-      points_balance: profile.points_balance,
-      pending_points: 0,
-      available_points: profile.points_balance,
-      minimum_points: 120
+      wallet_balance: profile.wallet_balance,
+      pending_amount: 0,
+      available_amount: profile.wallet_balance,
+      minimum_amount: 120
     };
     const withdrawalInfo = document.getElementById("withdrawalBalanceInfo");
     if (withdrawalInfo) {
       withdrawalInfo.innerHTML = `
-        <span>Balance: <strong>${points(withdrawalBalance.points_balance)}</strong></span>
-        <span>Pending: <strong>${points(withdrawalBalance.pending_points)}</strong></span>
-        <span>Available to request: <strong>${points(withdrawalBalance.available_points)}</strong></span>`;
+        <span>Wallet: <strong>${peso(withdrawalBalance.wallet_balance)}</strong></span>
+        <span>Pending: <strong>${peso(withdrawalBalance.pending_amount)}</strong></span>
+        <span>Available: <strong>${peso(withdrawalBalance.available_amount)}</strong></span>`;
     }
 
     document.getElementById("withdrawalRequests").innerHTML =
@@ -103,7 +106,7 @@ async function loadProfile() {
         ? withdrawalResult.data.map(row => `
           <tr>
             <td>${new Date(row.created_at).toLocaleString()}</td>
-            <td>${points(row.points_amount)}</td>
+            <td>${peso(row.amount)}</td>
             <td><strong>${escapeHtml(row.gcash_name)}</strong><small class="block muted">${escapeHtml(row.gcash_number)}</small></td>
             <td>${statusBadge(row.status)}</td>
             <td>${escapeHtml(row.admin_note || "")}</td>
@@ -172,14 +175,6 @@ async function loadProfile() {
           <td>${escapeHtml(row.type)}</td><td>${peso(row.amount)}</td>
           <td>${escapeHtml(row.description || "")}</td></tr>`).join("")
         : '<tr><td colspan="4">No wallet activity yet.</td></tr>';
-
-    document.getElementById("pointTransactions").innerHTML =
-      pointResult.data.length
-        ? pointResult.data.map(row => `
-          <tr><td>${new Date(row.created_at).toLocaleString()}</td>
-          <td>${escapeHtml(row.type)}</td><td>${points(row.points)}</td>
-          <td>${escapeHtml(row.description || "")}</td></tr>`).join("")
-        : '<tr><td colspan="4">No point activity yet.</td></tr>';
   } catch (error) {
     showMessage(profileMessage, error.message);
     showMessage(withdrawalMessage, error.message);
@@ -227,12 +222,12 @@ document.getElementById("referenceForm")?.addEventListener("submit", async event
 document.getElementById("withdrawalForm")?.addEventListener("submit", async event => {
   event.preventDefault();
 
-  const amount = Number(document.getElementById("withdrawalPoints").value);
+  const amount = Number(document.getElementById("withdrawalAmount").value);
   const gcashName = document.getElementById("withdrawalGcashName").value.trim();
   const gcashNumber = document.getElementById("withdrawalGcashNumber").value.trim();
 
-  if (!Number.isInteger(amount) || amount < 120) {
-    return showMessage(withdrawalMessage, "Minimum withdrawal is 120 whole points.");
+  if (!Number.isFinite(amount) || amount < 120) {
+    return showMessage(withdrawalMessage, "Minimum withdrawal is ₱120.");
   }
   if (gcashName.length < 2) {
     return showMessage(withdrawalMessage, "Enter the name registered in GCash.");
@@ -243,7 +238,7 @@ document.getElementById("withdrawalForm")?.addEventListener("submit", async even
 
   showMessage(withdrawalMessage, "Submitting withdrawal request...");
   const { error } = await db.rpc("create_withdrawal_request", {
-    p_points_amount: amount,
+    p_amount: amount,
     p_gcash_name: gcashName,
     p_gcash_number: gcashNumber
   });
