@@ -37,6 +37,12 @@
     return data;
   };
 
+
+  window.gemImage = name => {
+    const file = String(name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return `images/${file}.webp`;
+  };
+
   window.showMessage = (element, text, success = false) => {
     element.textContent = text || "";
     element.classList.toggle("success", success);

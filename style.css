@@ -62,7 +62,30 @@ input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,60,25
 .stat-card strong { display: block; font-size: 1.7rem; margin-top: 6px; }
 .card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .gem-card { overflow: hidden; }
-.gem-top { min-height: 150px; display: grid; place-items: center; font-size: 4.5rem; background: linear-gradient(135deg,#f2edff,#eef7ff); }
+.gem-top {
+  height: 210px;
+  overflow: hidden;
+  background: linear-gradient(135deg,#f2edff,#eef7ff);
+  position: relative;
+}
+.gem-top::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(12,10,28,.18), transparent 45%);
+  pointer-events: none;
+}
+.gem-top img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform .45s ease, filter .45s ease;
+}
+.gem-card:hover .gem-top img {
+  transform: scale(1.055);
+  filter: saturate(1.08) contrast(1.04);
+}
 .gem-body { padding: 20px; }
 .gem-title { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
 .gem-title h2 { margin: 0; }
@@ -93,4 +116,13 @@ th { color: var(--muted); font-size: .82rem; }
   .container { padding-top: 30px; }
   .auth-grid, .card-grid { grid-template-columns: 1fr; }
   .hero, .inline-form { align-items: stretch; flex-direction: column; }
+}
+
+.gem-card {
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+.gem-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(28, 39, 64, .14);
+  border-color: rgba(108,60,255,.25);
 }

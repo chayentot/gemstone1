@@ -84,7 +84,7 @@ function ownedCard(m) {
   const completed = m.status === "completed";
   return `
     <article class="gem-card">
-      <div class="gem-top">${escapeHtml(gem.emoji)}</div>
+      <div class="gem-top"><img src="${gemImage(gem.name)}" alt="${escapeHtml(gem.name)} gemstone" loading="lazy"></div>
       <div class="gem-body">
         <div class="gem-title"><h2>${escapeHtml(gem.name)}</h2><span class="price">${points(gem.points_per_claim)} pts</span></div>
         <div class="meta">

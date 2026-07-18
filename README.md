@@ -1,3 +1,7 @@
+# Real gemstone image version
+
+This package includes local realistic gemstone images in the `images` folder. Upload the `images` folder together with all root files. Do not upload only the HTML files.
+
 # Flat-folder GitHub Pages version
 
 Upload every file in this folder directly to the root of your GitHub repository.
