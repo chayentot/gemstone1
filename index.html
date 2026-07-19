@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gemstone Membership</title>
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="index.html">💎 Gemstone</a>
-    <nav>
+    <nav class="desktop-nav" aria-label="Primary navigation">
       <a class="active" href="index.html">Home</a>
       <a href="membership.html">Membership</a>
       <a href="profile.html">Profile</a>
-      <button id="logoutBtn" class="link-button hidden">Logout</button>
     </nav>
+    <button id="logoutBtn" class="link-button top-logout hidden">Logout</button>
   </header>
 
   <main class="container">
@@ -62,6 +62,8 @@
       <p id="homeMessage" class="message"></p>
     </section>
   </main>
+
+  <nav class="mobile-bottom-nav" aria-label="Mobile navigation"><a class="mobile-nav-link active" href="index.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-7h4v7h5V9.5"/></svg><span>Home</span></a><a class="mobile-nav-link" href="membership.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 4-7 4-7-4 7-4Z"/><path d="m5 11 7 4 7-4"/><path d="m5 15 7 4 7-4"/></svg><span>Membership</span></a><a class="mobile-nav-link" href="profile.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21c.8-4.2 3.3-6.5 7.5-6.5s6.7 2.3 7.5 6.5"/></svg><span>Profile</span></a></nav>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>

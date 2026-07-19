@@ -1530,3 +1530,122 @@ button:disabled {
     font-size: .68rem;
   }
 }
+
+
+/* =========================================================
+   V22 TRUE MOBILE BOTTOM NAVIGATION
+   ========================================================= */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+.top-logout {
+  margin-left: auto;
+}
+
+@media (max-width: 620px) {
+  body {
+    padding-bottom: calc(78px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    min-height: 58px;
+    padding: 9px 12px;
+    background: rgba(255,255,255,.97);
+    border-bottom: 1px solid rgba(120,120,140,.16);
+    backdrop-filter: blur(14px);
+  }
+
+  .topbar .brand {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .topbar .desktop-nav {
+    display: none !important;
+    position: static !important;
+  }
+
+  .topbar .top-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    padding: 7px 10px;
+    border-radius: 9px;
+    font-size: .72rem;
+    line-height: 1;
+  }
+
+  .topbar .top-logout.hidden {
+    display: none !important;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1200;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    min-height: 66px;
+    padding: 5px 8px calc(5px + env(safe-area-inset-bottom));
+    background: rgba(255,255,255,.98);
+    border-top: 1px solid rgba(120,120,140,.18);
+    box-shadow: 0 -8px 24px rgba(28,39,64,.14);
+    backdrop-filter: blur(16px);
+  }
+
+  .mobile-bottom-nav .mobile-nav-link {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 2px;
+    min-width: 0;
+    min-height: 54px;
+    padding: 5px 3px;
+    color: #687080;
+    border-radius: 13px;
+    font-size: .68rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .mobile-bottom-nav .mobile-nav-link svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mobile-bottom-nav .mobile-nav-link.active {
+    color: #6c3cff;
+    background: rgba(108,60,255,.11);
+  }
+
+  main.container {
+    padding-bottom: 24px !important;
+  }
+}
+
+@media (min-width: 621px) {
+  .desktop-nav {
+    display: flex;
+  }
+
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
