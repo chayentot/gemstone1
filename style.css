@@ -689,3 +689,318 @@ button:disabled {
     min-height: 66px;
   }
 }
+
+
+/* =========================================================
+   V18 MOBILE COMPACT LAYOUT
+   Designed for narrow cellphone screens.
+   ========================================================= */
+
+@media (max-width: 620px) {
+  /* Reduce general vertical and horizontal spacing. */
+  .container {
+    padding: 18px 10px 52px;
+  }
+
+  .topbar {
+    gap: 10px;
+    padding: 11px 10px;
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
+
+  nav {
+    gap: 8px;
+    font-size: .78rem;
+  }
+
+  .hero {
+    margin-bottom: 15px;
+  }
+
+  .hero h1 {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+  }
+
+  .hero .muted {
+    font-size: .88rem;
+    line-height: 1.45;
+  }
+
+  .panel {
+    padding: 15px;
+    margin-bottom: 14px;
+    border-radius: 16px;
+  }
+
+  /* HOME: wallet, points and active gemstones in one row. */
+  #summaryCards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+    margin-bottom: 13px;
+  }
+
+  #summaryCards .stat-card {
+    min-width: 0;
+    padding: 11px 7px;
+    border-radius: 14px;
+    box-shadow: 0 7px 18px rgba(28,39,64,.06);
+  }
+
+  #summaryCards .stat-card span {
+    display: block;
+    min-height: 30px;
+    font-size: .63rem;
+    line-height: 1.18;
+  }
+
+  #summaryCards .stat-card strong {
+    margin-top: 4px;
+    font-size: clamp(.82rem, 3.6vw, 1.08rem);
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  /* HOME + MEMBERSHIP: three gemstone products per row. */
+  .card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .gem-card {
+    min-width: 0;
+    border-radius: 13px;
+    box-shadow: 0 7px 18px rgba(28,39,64,.07);
+  }
+
+  .gem-card:hover {
+    transform: none;
+  }
+
+  .gem-top {
+    height: 92px;
+  }
+
+  .gem-body {
+    padding: 8px 7px 9px;
+  }
+
+  .gem-title {
+    display: block;
+  }
+
+  .gem-title h2 {
+    font-size: .82rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .gem-title .price {
+    display: block;
+    margin-top: 3px;
+    font-size: .72rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .gem-body > .muted {
+    display: -webkit-box;
+    margin: 6px 0;
+    overflow: hidden;
+    font-size: .62rem;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .meta {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    margin: 7px 0;
+  }
+
+  .meta div {
+    padding: 5px;
+    border-radius: 8px;
+  }
+
+  .meta span {
+    font-size: .55rem;
+    line-height: 1.15;
+  }
+
+  .meta strong {
+    margin-top: 1px;
+    font-size: .68rem;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .gem-card .status {
+    margin: 6px 0;
+    padding: 5px;
+    border-radius: 7px;
+    font-size: .58rem;
+    line-height: 1.2;
+  }
+
+  .gem-card .primary {
+    width: 100%;
+    padding: 7px 4px;
+    border-radius: 8px;
+    font-size: .62rem;
+    line-height: 1.15;
+  }
+
+  .balance-pill {
+    padding: 8px 12px;
+    font-size: .82rem;
+  }
+
+  /* PROFILE: wallet balance and total memberships in one row. */
+  #profileSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  #profileSummary .stat-card {
+    min-width: 0;
+    grid-column: auto;
+    padding: 13px 10px;
+    border-radius: 14px;
+  }
+
+  #profileSummary .stat-card span {
+    font-size: .68rem;
+    line-height: 1.2;
+  }
+
+  #profileSummary .stat-card strong,
+  #profileSummary .wallet-main-card strong {
+    margin-top: 4px;
+    font-size: clamp(1rem, 5vw, 1.35rem);
+    overflow-wrap: anywhere;
+  }
+
+  #profileSummary .wallet-main-card small {
+    display: none;
+  }
+
+  /* PROFILE: four command buttons in one row. */
+  .profile-actions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    margin: 12px 0 15px;
+  }
+
+  .profile-action {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 5px;
+    min-width: 0;
+    min-height: 76px;
+    padding: 7px 3px;
+    text-align: center;
+    border-radius: 12px;
+  }
+
+  .profile-action:hover {
+    transform: none;
+  }
+
+  .action-icon {
+    width: 31px;
+    height: 31px;
+    flex-basis: 31px;
+    border-radius: 9px;
+  }
+
+  .action-icon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .profile-action strong {
+    margin: 0;
+    font-size: .62rem;
+    line-height: 1.12;
+    overflow-wrap: anywhere;
+  }
+
+  .profile-action small {
+    display: none;
+  }
+
+  .profile-panel {
+    border-radius: 16px;
+  }
+
+  .section-title-row {
+    gap: 9px;
+  }
+
+  .section-logo {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+    border-radius: 11px;
+  }
+
+  .section-title-row h2 {
+    font-size: 1.1rem;
+  }
+
+  .section-title-row p {
+    font-size: .75rem;
+  }
+
+  /* Allow three product columns without accidental horizontal overflow. */
+  #ownedGemstones,
+  #membershipGrid {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #ownedGemstones > *,
+  #membershipGrid > * {
+    min-width: 0;
+  }
+
+  .empty {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Extra-small devices remain three/four columns but become even tighter. */
+@media (max-width: 380px) {
+  .container {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+
+  .card-grid,
+  #summaryCards {
+    gap: 5px;
+  }
+
+  .gem-top {
+    height: 78px;
+  }
+
+  .gem-body {
+    padding: 7px 5px;
+  }
+
+  .profile-actions {
+    gap: 4px;
+  }
+
+  .profile-action strong {
+    font-size: .56rem;
+  }
+}
