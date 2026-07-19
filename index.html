@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gemstone Membership</title>
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
   <header class="topbar">
@@ -65,9 +65,18 @@
 
   <nav class="mobile-bottom-nav" aria-label="Mobile navigation"><a class="mobile-nav-link active" href="index.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-7h4v7h5V9.5"/></svg><span>Home</span></a><a class="mobile-nav-link" href="membership.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 4-7 4-7-4 7-4Z"/><path d="m5 11 7 4 7-4"/><path d="m5 15 7 4 7-4"/></svg><span>Membership</span></a><a class="mobile-nav-link" href="profile.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 21c.8-4.2 3.3-6.5 7.5-6.5s6.7 2.3 7.5 6.5"/></svg><span>Profile</span></a></nav>
 
+
+  <div id="globalLoadingOverlay" class="global-loading-overlay hidden" aria-hidden="true">
+    <div class="global-loading-card" role="status" aria-live="polite">
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <strong id="globalLoadingText">Please wait…</strong>
+    </div>
+  </div>
+  <div id="globalToast" class="global-toast hidden" role="status" aria-live="polite"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=14"></script>
+  <script src="common.js?v=23"></script>
   <script src="home.js?v=14"></script>
 </body>
 </html>

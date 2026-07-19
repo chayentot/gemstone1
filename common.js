@@ -53,3 +53,65 @@
     window.location.href = "index.html";
   });
 })();
+
+
+// =========================================================
+// V23 shared mobile interaction helpers
+// =========================================================
+window.setGlobalLoading = function setGlobalLoading(active, text = "Please wait…") {
+  const overlay = document.getElementById("globalLoadingOverlay");
+  const label = document.getElementById("globalLoadingText");
+  if (!overlay) return;
+  if (label) label.textContent = text;
+  overlay.classList.toggle("hidden", !active);
+  overlay.setAttribute("aria-hidden", String(!active));
+};
+
+window.showGlobalToast = function showGlobalToast(message, type = "success") {
+  const toast = document.getElementById("globalToast");
+  if (!toast) return;
+  toast.textContent = message;
+  toast.className = `global-toast ${type}`;
+  clearTimeout(window.__gemstoneToastTimer);
+  window.__gemstoneToastTimer = setTimeout(() => {
+    toast.classList.add("hidden");
+  }, 3200);
+};
+
+window.runButtonTask = async function runButtonTask(button, task, loadingText = "Please wait…") {
+  if (!button || button.dataset.busy === "true") return;
+  button.dataset.busy = "true";
+  button.disabled = true;
+  button.classList.add("is-loading");
+  setGlobalLoading(true, loadingText);
+  try {
+    return await task();
+  } finally {
+    setGlobalLoading(false);
+    button.classList.remove("is-loading");
+    button.disabled = false;
+    button.dataset.busy = "false";
+  }
+};
+
+(function setupMobileKeyboardBehavior() {
+  const viewport = window.visualViewport;
+  if (!viewport) return;
+
+  const update = () => {
+    const keyboardLikelyOpen = window.innerHeight - viewport.height > 140;
+    document.body.classList.toggle("keyboard-open", keyboardLikelyOpen);
+  };
+
+  viewport.addEventListener("resize", update);
+  viewport.addEventListener("scroll", update);
+  update();
+})();
+
+document.addEventListener("click", event => {
+  const button = event.target.closest("button, .primary");
+  if (!button || button.disabled || button.dataset.busy === "true") return;
+  if (button.type === "submit" || button.classList.contains("primary")) {
+    button.style.webkitTapHighlightColor = "transparent";
+  }
+});

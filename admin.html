@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Payment Administration</title>
-  <link rel="stylesheet" href="style.css?v=22">
+  <link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
   <header class="topbar">
@@ -346,9 +346,18 @@
     </form>
   </dialog>
 
+
+  <div id="globalLoadingOverlay" class="global-loading-overlay hidden" aria-hidden="true">
+    <div class="global-loading-card" role="status" aria-live="polite">
+      <span class="loading-spinner" aria-hidden="true"></span>
+      <strong id="globalLoadingText">Please wait…</strong>
+    </div>
+  </div>
+  <div id="globalToast" class="global-toast hidden" role="status" aria-live="polite"></div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=17"></script>
-  <script src="admin.js?v=17"></script>
+  <script src="common.js?v=23"></script>
+  <script src="admin.js?v=23"></script>
 </body>
 </html>
