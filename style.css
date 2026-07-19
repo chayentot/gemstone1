@@ -1247,3 +1247,172 @@ button:disabled {
     font-size: .7rem;
   }
 }
+
+
+/* =========================================================
+   V20 MOBILE UI
+   Compact referral dashboard and mobile-friendly data cards.
+   ========================================================= */
+
+@media (max-width: 620px) {
+  /* Force all four referral statistics into one row. */
+  #referralStats,
+  .referral-stats,
+  .stats-grid.referral-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 5px !important;
+    width: 100%;
+  }
+
+  #referralStats .stat-card,
+  .referral-stats .stat-card,
+  .stats-grid.referral-grid .stat-card {
+    min-width: 0 !important;
+    padding: 9px 4px !important;
+    border-radius: 11px !important;
+    text-align: center;
+  }
+
+  #referralStats .stat-card span,
+  .referral-stats .stat-card span,
+  .stats-grid.referral-grid .stat-card span {
+    display: block;
+    min-height: 25px !important;
+    font-size: .51rem !important;
+    line-height: 1.15 !important;
+    overflow-wrap: anywhere;
+  }
+
+  #referralStats .stat-card strong,
+  .referral-stats .stat-card strong,
+  .stats-grid.referral-grid .stat-card strong {
+    display: block;
+    margin-top: 3px !important;
+    font-size: clamp(.68rem, 3vw, .9rem) !important;
+    line-height: 1.1 !important;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Keep currency values compact in referral cards. */
+  #referralStats .stat-card:nth-child(3) strong,
+  #referralStats .stat-card:nth-child(4) strong,
+  .referral-stats .stat-card:nth-child(3) strong,
+  .referral-stats .stat-card:nth-child(4) strong {
+    font-size: clamp(.62rem, 2.8vw, .82rem) !important;
+  }
+
+  /* Compact referral information message. */
+  #referralPanel .message,
+  #referralPanel .notice {
+    margin-bottom: 9px;
+    padding: 9px 10px;
+    border-radius: 11px;
+    font-size: .72rem;
+    line-height: 1.3;
+  }
+
+  /* Referral network becomes compact stacked cards. */
+  #referralNetwork,
+  #referralHistory {
+    display: grid;
+    gap: 7px;
+  }
+
+  #referralNetwork tr,
+  #referralHistory tr {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px 8px;
+    padding: 9px !important;
+    border-radius: 11px !important;
+  }
+
+  #referralNetwork td,
+  #referralHistory td {
+    min-width: 0;
+    font-size: .7rem !important;
+    overflow-wrap: anywhere;
+  }
+
+  /* Empty referral message spans full width. */
+  #referralNetwork tr td:only-child,
+  #referralHistory tr td:only-child {
+    grid-column: 1 / -1;
+  }
+
+  /* Make section headings shorter and denser. */
+  #referralPanel .section-title-row {
+    margin-bottom: 8px;
+  }
+
+  #referralPanel .section-title-row h2 {
+    font-size: 1rem;
+  }
+
+  #referralPanel .section-title-row p {
+    font-size: .68rem;
+  }
+
+  /* Mobile transaction cards */
+  #walletActivityPanel table tbody,
+  #cashInPanel table tbody,
+  #withdrawalPanel table tbody {
+    gap: 7px;
+  }
+
+  #walletActivityPanel table tr,
+  #cashInPanel table tr,
+  #withdrawalPanel table tr {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 8px;
+    padding: 9px;
+    border-radius: 11px;
+  }
+
+  #walletActivityPanel table td,
+  #cashInPanel table td,
+  #withdrawalPanel table td {
+    font-size: .7rem;
+  }
+
+  /* Prevent long transaction names and references from clipping. */
+  #walletActivityPanel table td,
+  #cashInPanel table td,
+  #withdrawalPanel table td {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  /* Keep navigation visible and compact. */
+  .topbar nav {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 380px) {
+  #referralStats,
+  .referral-stats,
+  .stats-grid.referral-grid {
+    gap: 4px !important;
+  }
+
+  #referralStats .stat-card,
+  .referral-stats .stat-card,
+  .stats-grid.referral-grid .stat-card {
+    padding: 8px 3px !important;
+  }
+
+  #referralStats .stat-card span,
+  .referral-stats .stat-card span,
+  .stats-grid.referral-grid .stat-card span {
+    font-size: .47rem !important;
+  }
+
+  #referralStats .stat-card strong,
+  .referral-stats .stat-card strong,
+  .stats-grid.referral-grid .stat-card strong {
+    font-size: .66rem !important;
+  }
+}
