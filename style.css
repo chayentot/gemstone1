@@ -1416,3 +1416,117 @@ button:disabled {
     font-size: .66rem !important;
   }
 }
+
+
+/* =========================================================
+   V21 MOBILE BOTTOM NAVIGATION
+   Home, Membership and Profile move to the bottom on phones.
+   Logout remains in the top header.
+   ========================================================= */
+
+@media (max-width: 620px) {
+  body {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+
+  .topbar {
+    min-height: 58px;
+    align-items: center;
+  }
+
+  .topbar nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    width: 100%;
+    min-height: 64px;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(120, 120, 140, .18);
+    background: rgba(255, 255, 255, .97);
+    box-shadow: 0 -7px 22px rgba(28, 39, 64, .12);
+    backdrop-filter: blur(14px);
+  }
+
+  .topbar nav a {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 50px;
+    padding: 6px 4px;
+    border-radius: 12px;
+    font-size: .75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  .topbar nav a::before {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 1.15rem;
+    line-height: 1;
+  }
+
+  .topbar nav a[href*="index"]::before {
+    content: "⌂";
+  }
+
+  .topbar nav a[href*="membership"]::before {
+    content: "💎";
+  }
+
+  .topbar nav a[href*="profile"]::before {
+    content: "◉";
+  }
+
+  .topbar nav a.active {
+    background: rgba(108, 60, 255, .11);
+    color: #6c3cff;
+  }
+
+  /* Logout remains at the top-right. */
+  .topbar .logout,
+  .topbar #logoutButton,
+  .topbar a[href*="logout"] {
+    position: static;
+    display: inline-flex;
+    margin-left: auto;
+    padding: 7px 9px;
+    border-radius: 10px;
+    font-size: .72rem;
+    font-weight: 700;
+  }
+
+  /* Hide any duplicate Logout item inside the moved bottom nav. */
+  .topbar nav .logout,
+  .topbar nav #logoutButton,
+  .topbar nav a[href*="logout"] {
+    display: none !important;
+  }
+
+  .container,
+  main {
+    padding-bottom: 22px;
+  }
+
+  dialog {
+    margin-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Extra-narrow phones */
+@media (max-width: 380px) {
+  .topbar nav {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .topbar nav a {
+    font-size: .68rem;
+  }
+}
