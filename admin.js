@@ -18,6 +18,47 @@ function peso(value) {
   return `₱${Number(value || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 }
 
+
+const adminCommandButtons = document.querySelectorAll(".admin-command-button");
+const adminSections = document.querySelectorAll(".admin-collapsible-section");
+
+function openAdminSection(targetId, shouldScroll = true) {
+  adminSections.forEach(section => {
+    section.classList.toggle("is-hidden", section.id !== targetId);
+  });
+
+  adminCommandButtons.forEach(button => {
+    const active = button.dataset.adminTarget === targetId;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-expanded", String(active));
+  });
+
+  if (shouldScroll) {
+    document.getElementById(targetId)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+  try {
+    localStorage.setItem("gemstone_admin_open_section", targetId);
+  } catch (_) {}
+}
+
+adminCommandButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    openAdminSection(button.dataset.adminTarget);
+  });
+});
+
+try {
+  const saved = localStorage.getItem("gemstone_admin_open_section");
+  if (saved && document.getElementById(saved)) {
+    openAdminSection(saved, false);
+  }
+} catch (_) {}
+
+
 async function checkAdmin() {
   const user = await requireUser();
   if (!user) return false;

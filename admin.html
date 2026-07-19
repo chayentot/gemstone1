@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
   <title>Payment Administration</title>
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
   <header class="topbar">
@@ -35,7 +35,44 @@
 
       <div id="adminSummary" class="summary-grid"></div>
 
-      <section class="panel">
+
+      <section class="admin-command-panel">
+        <div class="admin-command-header">
+          <div>
+            <p class="eyebrow">ADMIN COMMAND CENTER</p>
+            <h2>Management sections</h2>
+            <p class="muted">Open only the section you need to keep the page compact.</p>
+          </div>
+        </div>
+
+        <div class="admin-command-grid" role="tablist" aria-label="Admin sections">
+          <button type="button" class="admin-command-button active"
+                  data-admin-target="cashInSection" aria-expanded="true">
+            <span class="command-icon">📥</span>
+            <span><strong>Pending Reviews</strong><small>Cash-in requests</small></span>
+          </button>
+
+          <button type="button" class="admin-command-button"
+                  data-admin-target="withdrawalSection" aria-expanded="false">
+            <span class="command-icon">💸</span>
+            <span><strong>Wallet Withdrawals</strong><small>Review payout requests</small></span>
+          </button>
+
+          <button type="button" class="admin-command-button"
+                  data-admin-target="gemstoneSection" aria-expanded="false">
+            <span class="command-icon">💎</span>
+            <span><strong>Gemstone Management</strong><small>Add and edit plans</small></span>
+          </button>
+
+          <button type="button" class="admin-command-button"
+                  data-admin-target="usersSection" aria-expanded="false">
+            <span class="command-icon">👥</span>
+            <span><strong>Registered Users</strong><small>Wallet and account controls</small></span>
+          </button>
+        </div>
+      </section>
+
+      <section id="cashInSection" class="panel admin-collapsible-section">
         <div class="admin-toolbar">
           <h2>Pending review</h2>
           <select id="statusFilter">
@@ -61,7 +98,7 @@
         <p id="adminMessage" class="message"></p>
       </section>
 
-      <section class="panel">
+      <section id="withdrawalSection" class="panel admin-collapsible-section is-hidden">
         <div class="admin-toolbar">
           <div>
             <h2>Wallet withdrawals</h2>
@@ -90,7 +127,7 @@
       </section>
 
 
-      <section class="panel">
+      <section id="gemstoneSection" class="panel admin-collapsible-section is-hidden">
         <div class="admin-toolbar">
           <div>
             <p class="eyebrow">MEMBERSHIP CATALOG</p>
@@ -119,7 +156,7 @@
         <p id="adminGemstonesMessage" class="message"></p>
       </section>
 
-      <section class="panel">
+      <section id="usersSection" class="panel admin-collapsible-section is-hidden">
         <div class="admin-toolbar">
           <div>
             <p class="eyebrow">MEMBER DIRECTORY</p>
@@ -311,7 +348,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
-  <script src="common.js?v=16"></script>
-  <script src="admin.js?v=16"></script>
+  <script src="common.js?v=17"></script>
+  <script src="admin.js?v=17"></script>
 </body>
 </html>

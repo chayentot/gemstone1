@@ -594,3 +594,98 @@ button:disabled {
 @media (max-width: 640px) {
   .form-grid { grid-template-columns: 1fr; }
 }
+
+
+.admin-command-panel {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 18px;
+  background: var(--panel, #fff);
+  box-shadow: var(--shadow, 0 10px 30px rgba(0,0,0,.08));
+}
+
+.admin-command-header {
+  margin-bottom: .9rem;
+}
+
+.admin-command-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .75rem;
+}
+
+.admin-command-button {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  min-height: 76px;
+  padding: .85rem;
+  border: 1px solid rgba(120, 120, 140, .25);
+  border-radius: 14px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+.admin-command-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(108, 60, 255, .6);
+}
+
+.admin-command-button.active {
+  border-color: #6c3cff;
+  background: rgba(108, 60, 255, .07);
+  box-shadow: 0 0 0 3px rgba(108, 60, 255, .12);
+}
+
+.command-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 12px;
+  background: rgba(108, 60, 255, .12);
+  font-size: 1.35rem;
+}
+
+.admin-command-button span:last-child {
+  display: grid;
+  gap: .15rem;
+  min-width: 0;
+}
+
+.admin-command-button small {
+  color: var(--muted, #6b7280);
+  font-size: .75rem;
+}
+
+.admin-collapsible-section {
+  animation: adminSectionIn .18s ease;
+}
+
+.admin-collapsible-section.is-hidden {
+  display: none;
+}
+
+@keyframes adminSectionIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 900px) {
+  .admin-command-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-command-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-command-button {
+    min-height: 66px;
+  }
+}
