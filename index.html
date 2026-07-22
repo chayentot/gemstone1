@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gemstone Membership</title>
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
   <header class="topbar">
@@ -50,15 +50,36 @@
     <section id="dashboard" class="hidden">
       <div class="hero">
         <div>
-          <p class="eyebrow">MY COLLECTION</p>
-          <h1>Your gemstones</h1>
-          <p class="muted">Claim ready rewards below. Missed days do not accumulate.</p>
+          <p class="eyebrow">GEMSTONE VALLEY</p>
+          <h1>Mine and unlock gemstones</h1>
+          <p class="muted">Regular players unlock each mine using materials. Membership owners open their purchased gemstone instantly.</p>
         </div>
         <a class="primary button-link" href="membership.html">Browse memberships</a>
       </div>
 
       <div id="summaryCards" class="summary-grid"></div>
-      <div id="ownedGemstones" class="card-grid"></div>
+
+      <section class="home-section mining-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MINING PROGRESSION</p>
+            <h2>Gemstone mines</h2>
+          </div>
+          <span class="progression-help">🔒 Materials or membership</span>
+        </div>
+        <div id="miningGemstones" class="mining-grid"></div>
+      </section>
+
+      <section class="home-section rewards-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">MEMBERSHIP REWARDS</p>
+            <h2>Your active memberships</h2>
+          </div>
+        </div>
+        <div id="ownedGemstones" class="card-grid"></div>
+      </section>
+
       <p id="homeMessage" class="message"></p>
     </section>
   </main>
@@ -77,6 +98,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="common.js?v=23"></script>
-  <script src="home.js?v=14"></script>
+  <script src="home.js?v=25"></script>
 </body>
 </html>

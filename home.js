@@ -3,6 +3,7 @@ const dashboard = document.getElementById("dashboard");
 const authMessage = document.getElementById("authMessage");
 const homeMessage = document.getElementById("homeMessage");
 let countdownTimer;
+let miningCountdownTimer;
 
 const REFERRAL_STORAGE_KEY = "gemstone_pending_referral";
 
@@ -102,32 +103,192 @@ async function render() {
   await applyPendingReferral();
 
   try {
-    const [profile, membershipsResult] = await Promise.all([
+    const [profile, membershipsResult, miningResult] = await Promise.all([
       getProfile(session.user.id),
       db.from("user_memberships")
         .select("*, gemstones(*)")
         .eq("user_id", session.user.id)
-        .order("purchased_at", { ascending: false })
+        .order("purchased_at", { ascending: false }),
+      db.rpc("get_home_mining_progress")
     ]);
     if (membershipsResult.error) throw membershipsResult.error;
+    if (miningResult.error) throw miningResult.error;
     const memberships = membershipsResult.data || [];
+    const miningProgress = miningResult.data || [];
 
     document.getElementById("summaryCards").innerHTML = `
       <article class="stat-card"><span>Wallet balance</span><strong>${money(profile.wallet_balance)}</strong></article>
       <article class="stat-card"><span>Available points</span><strong>${points(profile.points_balance)}</strong></article>
       <article class="stat-card"><span>Active gemstones</span><strong>${memberships.filter(x => x.status === "active").length}</strong></article>`;
 
+    const miningGrid = document.getElementById("miningGemstones");
+    miningGrid.innerHTML = miningProgress.map(mine => miningCard(mine)).join("");
+    bindMiningButtons();
+    startMiningCountdowns();
+
     const grid = document.getElementById("ownedGemstones");
     if (!memberships.length) {
-      grid.innerHTML = '<div class="empty"><h2>No gemstones yet</h2><p class="muted">Visit Membership to buy your first gemstone.</p></div>';
-      return;
+      grid.innerHTML = '<div class="empty"><h2>No memberships yet</h2><p class="muted">You can still progress through free mining, or buy a membership to unlock a gemstone instantly.</p></div>';
+    } else {
+      grid.innerHTML = memberships.map(m => ownedCard(m)).join("");
+      bindClaimButtons();
+      startCountdowns();
     }
-    grid.innerHTML = memberships.map(m => ownedCard(m)).join("");
-    bindClaimButtons();
-    startCountdowns();
   } catch (error) {
     showMessage(homeMessage, error.message);
   }
+}
+
+
+function miningCard(mine) {
+  const unlocked = Boolean(mine.is_unlocked);
+  const owned = Boolean(mine.has_membership);
+  const requirementMet = Number(mine.required_material_owned || 0) >= Number(mine.required_material_amount || 0);
+  const canUnlock = !unlocked && requirementMet;
+  const sourceLabel = owned
+    ? "Membership unlocked"
+    : unlocked
+      ? (mine.unlock_source === "starter" ? "Starter mine" : "Materials unlocked")
+      : "Locked";
+
+  let requirement = "";
+  if (!unlocked && Number(mine.progression_level) > 1) {
+    requirement = `
+      <div class="mine-requirement ${requirementMet ? "met" : ""}">
+        <span>Required to unlock</span>
+        <strong>${Number(mine.required_material_owned || 0).toLocaleString()} / ${Number(mine.required_material_amount || 0).toLocaleString()} ${escapeHtml(mine.required_material_name || "materials")}</strong>
+      </div>`;
+  }
+
+  const action = unlocked
+    ? `<button class="primary mine-btn" data-id="${mine.gemstone_id}">Mine now</button>`
+    : `<button class="unlock-btn ${canUnlock ? "primary" : ""}" data-id="${mine.gemstone_id}" ${canUnlock ? "" : "disabled"}>
+         ${canUnlock ? "Unlock mine" : "Need materials"}
+       </button>`;
+
+  return `
+    <article class="mine-card ${unlocked ? "unlocked" : "locked"} ${owned ? "membership-unlocked" : ""}">
+      <div class="mine-image">
+        <img src="${escapeHtml(mine.image_url || gemImage(mine.gemstone_name))}"
+             alt="${escapeHtml(mine.gemstone_name)} mine" loading="lazy">
+        <span class="mine-level">Level ${mine.progression_level}</span>
+        <span class="mine-lock-badge">${unlocked ? (owned ? "★ MEMBER" : "OPEN") : "🔒 LOCKED"}</span>
+      </div>
+      <div class="mine-body">
+        <div class="mine-title">
+          <h3>${escapeHtml(mine.gemstone_name)} Mine</h3>
+          <small>${sourceLabel}</small>
+        </div>
+        <div class="mine-stats">
+          <div><span>Materials</span><strong>${Number(mine.materials_owned || 0).toLocaleString()}</strong></div>
+          <div><span>Per mine</span><strong>+${Number(mine.material_yield || 0).toLocaleString()}</strong></div>
+        </div>
+        ${requirement}
+        <p class="mine-status ${unlocked ? "" : "locked"}"
+           data-mine-next="${unlocked ? (mine.next_mine_at || "") : ""}">
+          ${unlocked ? "Checking mine…" : "Unlock the mine to begin"}
+        </p>
+        ${action}
+        ${!unlocked ? '<a class="mine-membership-link" href="membership.html">Buy membership to open instantly</a>' : ""}
+      </div>
+    </article>`;
+}
+
+function startMiningCountdowns() {
+  clearInterval(miningCountdownTimer);
+
+  const update = () => {
+    document.querySelectorAll("[data-mine-next]").forEach(status => {
+      const button = status.parentElement.querySelector(".mine-btn");
+      if (!button) return;
+
+      if (!status.dataset.mineNext) {
+        status.textContent = "Ready to mine";
+        status.classList.remove("waiting");
+        button.disabled = false;
+        return;
+      }
+
+      const seconds = Math.floor((new Date(status.dataset.mineNext) - new Date()) / 1000);
+      if (seconds <= 0) {
+        status.textContent = "Ready to mine";
+        status.classList.remove("waiting");
+        button.disabled = false;
+      } else {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        status.textContent = h > 0
+          ? `Mine ready in ${h}h ${m}m ${s}s`
+          : `Mine ready in ${m}m ${s}s`;
+        status.classList.add("waiting");
+        button.disabled = true;
+      }
+    });
+  };
+
+  update();
+  miningCountdownTimer = setInterval(update, 1000);
+}
+
+function bindMiningButtons() {
+  document.querySelectorAll(".mine-btn").forEach(button => {
+    button.addEventListener("click", async () => {
+      if (button.dataset.busy === "true") return;
+
+      const task = async () => {
+        const { data, error } = await db.rpc("mine_gemstone", {
+          p_gemstone_id: button.dataset.id
+        });
+        if (error) {
+          showMessage(homeMessage, error.message);
+          showGlobalToast?.(error.message, "error");
+          return;
+        }
+
+        const amount = Number(data || 0);
+        const text = `Mining complete. You collected ${amount.toLocaleString()} materials.`;
+        showMessage(homeMessage, text, true);
+        showGlobalToast?.(text, "success");
+        await render();
+      };
+
+      if (window.runButtonTask) {
+        await runButtonTask(button, task, "Mining gemstone…");
+      } else {
+        button.disabled = true;
+        await task();
+      }
+    });
+  });
+
+  document.querySelectorAll(".unlock-btn:not(:disabled)").forEach(button => {
+    button.addEventListener("click", async () => {
+      if (!confirm("Use the required materials to unlock this gemstone mine?")) return;
+
+      const task = async () => {
+        const { error } = await db.rpc("unlock_gemstone_with_materials", {
+          p_gemstone_id: button.dataset.id
+        });
+        if (error) {
+          showMessage(homeMessage, error.message);
+          showGlobalToast?.(error.message, "error");
+          return;
+        }
+
+        showMessage(homeMessage, "Gemstone mine unlocked. You can mine immediately.", true);
+        showGlobalToast?.("Mine unlocked successfully.", "success");
+        await render();
+      };
+
+      if (window.runButtonTask) {
+        await runButtonTask(button, task, "Unlocking mine…");
+      } else {
+        button.disabled = true;
+        await task();
+      }
+    });
+  });
 }
 
 function ownedCard(m) {
@@ -137,10 +298,10 @@ function ownedCard(m) {
     <article class="gem-card">
       <div class="gem-top"><img src="${gemImage(gem.name)}" alt="${escapeHtml(gem.name)} gemstone" loading="lazy"></div>
       <div class="gem-body">
-        <div class="gem-title"><h2>${escapeHtml(gem.name)}</h2><span class="price">${points(gem.points_per_claim)} pts</span></div>
+        <div class="gem-title"><h2>${escapeHtml(gem.name)}</h2><span class="price">${points(m.points_per_claim ?? gem.points_per_claim)} pts</span></div>
         <div class="meta">
-          <div><span>Claims</span><strong>${m.claims_completed}/${m.max_claims}</strong></div>
-          <div><span>Total earned</span><strong>${points(m.claims_completed * gem.points_per_claim)}</strong></div>
+          <div><span>Claims</span><strong>${Number(m.claims_completed ?? m.claims_made ?? 0)}/${m.max_claims}</strong></div>
+          <div><span>Total earned</span><strong>${points(Number(m.claims_completed ?? m.claims_made ?? 0) * Number(m.points_per_claim ?? gem.points_per_claim ?? 0))}</strong></div>
         </div>
         <p class="status ${completed ? "" : "waiting"}" data-next="${m.next_redeem_at || ""}">
           ${completed ? "Membership completed" : "Checking timer…"}
@@ -178,16 +339,46 @@ function startCountdowns() {
 function bindClaimButtons() {
   document.querySelectorAll(".claim-btn").forEach(button => {
     button.addEventListener("click", async () => {
-      button.disabled = true;
-      showMessage(homeMessage, "Redeeming...");
-      const { error } = await db.rpc("redeem_membership", { p_membership_id: button.dataset.id });
-      if (error) {
-        showMessage(homeMessage, error.message);
-        button.disabled = false;
-        return;
+      const membershipId = button.dataset.id;
+      if (!membershipId || button.dataset.busy === "true") return;
+
+      const redeemTask = async () => {
+        showMessage(homeMessage, "Redeeming reward...");
+        const { data, error } = await db.rpc("redeem_membership", {
+          p_membership_id: membershipId
+        });
+
+        if (error) {
+          const message = error.message || "Unable to redeem this reward.";
+          showMessage(homeMessage, message);
+          showGlobalToast?.(message, "error");
+          return;
+        }
+
+        const reward = Number(data || 0);
+        const successText = reward > 0
+          ? `${money(reward)} was added to your wallet.`
+          : "Reward redeemed successfully.";
+
+        showMessage(homeMessage, successText, true);
+        showGlobalToast?.(successText, "success");
+        await render();
+      };
+
+      try {
+        if (window.runButtonTask) {
+          await runButtonTask(button, redeemTask, "Redeeming reward…");
+        } else {
+          button.disabled = true;
+          await redeemTask();
+        }
+      } catch (error) {
+        const message = error?.message || "Unexpected redemption error.";
+        showMessage(homeMessage, message);
+        showGlobalToast?.(message, "error");
+      } finally {
+        button.dataset.busy = "false";
       }
-      showMessage(homeMessage, "Points redeemed. Your next 24-hour cycle has started.", true);
-      await render();
     });
   });
 }
