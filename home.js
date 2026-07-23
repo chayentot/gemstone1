@@ -3,7 +3,8 @@ const dashboard = document.getElementById("dashboard");
 const authMessage = document.getElementById("authMessage");
 const homeMessage = document.getElementById("homeMessage");
 let countdownTimer;
-let miningCountdownTimer;
+let quartzTicker;
+let quartzState = null;
 
 const REFERRAL_STORAGE_KEY = "gemstone_pending_referral";
 
@@ -103,32 +104,29 @@ async function render() {
   await applyPendingReferral();
 
   try {
-    const [profile, membershipsResult, miningResult] = await Promise.all([
+    const [profile, membershipsResult, quartzResult] = await Promise.all([
       getProfile(session.user.id),
       db.from("user_memberships")
         .select("*, gemstones(*)")
         .eq("user_id", session.user.id)
         .order("purchased_at", { ascending: false }),
-      db.rpc("get_home_mining_progress")
+      db.rpc("get_quartz_mine")
     ]);
     if (membershipsResult.error) throw membershipsResult.error;
-    if (miningResult.error) throw miningResult.error;
+    if (quartzResult.error) throw quartzResult.error;
     const memberships = membershipsResult.data || [];
-    const miningProgress = miningResult.data || [];
+    quartzState = Array.isArray(quartzResult.data) ? quartzResult.data[0] : quartzResult.data;
 
     document.getElementById("summaryCards").innerHTML = `
       <article class="stat-card"><span>Wallet balance</span><strong>${money(profile.wallet_balance)}</strong></article>
-      <article class="stat-card"><span>Available points</span><strong>${points(profile.points_balance)}</strong></article>
-      <article class="stat-card"><span>Active gemstones</span><strong>${memberships.filter(x => x.status === "active").length}</strong></article>`;
+      <article class="stat-card"><span>Quartz materials</span><strong>${Number(quartzState?.quartz_balance || 0).toLocaleString()}</strong></article>
+      <article class="stat-card"><span>Mine level</span><strong>${Number(quartzState?.mine_level || 1)}</strong></article>`;
 
-    const miningGrid = document.getElementById("miningGemstones");
-    miningGrid.innerHTML = miningProgress.map(mine => miningCard(mine)).join("");
-    bindMiningButtons();
-    startMiningCountdowns();
+    renderQuartzMine();
 
     const grid = document.getElementById("ownedGemstones");
     if (!memberships.length) {
-      grid.innerHTML = '<div class="empty"><h2>No memberships yet</h2><p class="muted">You can still progress through free mining, or buy a membership to unlock a gemstone instantly.</p></div>';
+      grid.innerHTML = '<div class="empty"><h2>No memberships yet</h2><p class="muted">Your Quartz mine remains free. Memberships provide separate wallet rewards.</p></div>';
     } else {
       grid.innerHTML = memberships.map(m => ownedCard(m)).join("");
       bindClaimButtons();
@@ -140,155 +138,107 @@ async function render() {
 }
 
 
-function miningCard(mine) {
-  const unlocked = Boolean(mine.is_unlocked);
-  const owned = Boolean(mine.has_membership);
-  const requirementMet = Number(mine.required_material_owned || 0) >= Number(mine.required_material_amount || 0);
-  const canUnlock = !unlocked && requirementMet;
-  const sourceLabel = owned
-    ? "Membership unlocked"
-    : unlocked
-      ? (mine.unlock_source === "starter" ? "Starter mine" : "Materials unlocked")
-      : "Locked";
+function currentQuartzStored() {
+  if (!quartzState) return 0;
 
-  let requirement = "";
-  if (!unlocked && Number(mine.progression_level) > 1) {
-    requirement = `
-      <div class="mine-requirement ${requirementMet ? "met" : ""}">
-        <span>Required to unlock</span>
-        <strong>${Number(mine.required_material_owned || 0).toLocaleString()} / ${Number(mine.required_material_amount || 0).toLocaleString()} ${escapeHtml(mine.required_material_name || "materials")}</strong>
-      </div>`;
-  }
+  const base = Number(quartzState.stored_quartz || 0);
+  const rate = Number(quartzState.quartz_per_second || 1);
+  const capacity = Number(quartzState.capacity || 3600);
+  const calculatedAt = new Date(quartzState.calculated_at || Date.now()).getTime();
+  const elapsedSeconds = Math.max(0, Math.floor((Date.now() - calculatedAt) / 1000));
 
-  const action = unlocked
-    ? `<button class="primary mine-btn" data-id="${mine.gemstone_id}">Mine now</button>`
-    : `<button class="unlock-btn ${canUnlock ? "primary" : ""}" data-id="${mine.gemstone_id}" ${canUnlock ? "" : "disabled"}>
-         ${canUnlock ? "Unlock mine" : "Need materials"}
-       </button>`;
-
-  return `
-    <article class="mine-card ${unlocked ? "unlocked" : "locked"} ${owned ? "membership-unlocked" : ""}">
-      <div class="mine-image">
-        <img src="${escapeHtml(mine.image_url || gemImage(mine.gemstone_name))}"
-             alt="${escapeHtml(mine.gemstone_name)} mine" loading="lazy">
-        <span class="mine-level">Level ${mine.progression_level}</span>
-        <span class="mine-lock-badge">${unlocked ? (owned ? "★ MEMBER" : "OPEN") : "🔒 LOCKED"}</span>
-      </div>
-      <div class="mine-body">
-        <div class="mine-title">
-          <h3>${escapeHtml(mine.gemstone_name)} Mine</h3>
-          <small>${sourceLabel}</small>
-        </div>
-        <div class="mine-stats">
-          <div><span>Materials</span><strong>${Number(mine.materials_owned || 0).toLocaleString()}</strong></div>
-          <div><span>Per mine</span><strong>+${Number(mine.material_yield || 0).toLocaleString()}</strong></div>
-        </div>
-        ${requirement}
-        <p class="mine-status ${unlocked ? "" : "locked"}"
-           data-mine-next="${unlocked ? (mine.next_mine_at || "") : ""}">
-          ${unlocked ? "Checking mine…" : "Unlock the mine to begin"}
-        </p>
-        ${action}
-        ${!unlocked ? '<a class="mine-membership-link" href="membership.html">Buy membership to open instantly</a>' : ""}
-      </div>
-    </article>`;
+  return Math.min(capacity, base + (elapsedSeconds * rate));
 }
 
-function startMiningCountdowns() {
-  clearInterval(miningCountdownTimer);
+function renderQuartzMine() {
+  clearInterval(quartzTicker);
+  if (!quartzState) return;
 
-  const update = () => {
-    document.querySelectorAll("[data-mine-next]").forEach(status => {
-      const button = status.parentElement.querySelector(".mine-btn");
-      if (!button) return;
+  const level = Number(quartzState.mine_level || 1);
+  const rate = Number(quartzState.quartz_per_second || level);
+  const capacity = Number(quartzState.capacity || level * 3600);
+  const balance = Number(quartzState.quartz_balance || 0);
+  const upgradeCost = Number(quartzState.upgrade_cost || (1000 * level * level));
 
-      if (!status.dataset.mineNext) {
-        status.textContent = "Ready to mine";
-        status.classList.remove("waiting");
-        button.disabled = false;
-        return;
-      }
+  document.getElementById("quartzLevelBadge").textContent = `Level ${level}`;
+  document.getElementById("quartzRate").textContent = `${rate.toLocaleString()} / sec`;
+  document.getElementById("quartzCapacity").textContent = capacity.toLocaleString();
+  document.getElementById("quartzBalance").textContent = balance.toLocaleString();
+  document.getElementById("quartzUpgradeInfo").textContent =
+    `Level ${level + 1}: ${rate + 1}/sec, ${(capacity + 3600).toLocaleString()} capacity. Cost: ${upgradeCost.toLocaleString()} Quartz.`;
 
-      const seconds = Math.floor((new Date(status.dataset.mineNext) - new Date()) / 1000);
-      if (seconds <= 0) {
-        status.textContent = "Ready to mine";
-        status.classList.remove("waiting");
-        button.disabled = false;
-      } else {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
-        const s = seconds % 60;
-        status.textContent = h > 0
-          ? `Mine ready in ${h}h ${m}m ${s}s`
-          : `Mine ready in ${m}m ${s}s`;
-        status.classList.add("waiting");
-        button.disabled = true;
-      }
-    });
+  const updateStorage = () => {
+    const stored = currentQuartzStored();
+    const percent = capacity > 0 ? Math.min(100, (stored / capacity) * 100) : 0;
+    document.getElementById("quartzStorageText").textContent =
+      `${Math.floor(stored).toLocaleString()} / ${capacity.toLocaleString()}`;
+    document.getElementById("quartzStorageBar").style.width = `${percent}%`;
+
+    const collectButton = document.getElementById("collectQuartzBtn");
+    collectButton.disabled = stored < 1 || collectButton.dataset.busy === "true";
+    collectButton.textContent = stored >= capacity
+      ? "Collect — Storage full"
+      : "Collect Quartz";
   };
 
-  update();
-  miningCountdownTimer = setInterval(update, 1000);
-}
+  updateStorage();
+  quartzTicker = setInterval(updateStorage, 1000);
 
-function bindMiningButtons() {
-  document.querySelectorAll(".mine-btn").forEach(button => {
-    button.addEventListener("click", async () => {
-      if (button.dataset.busy === "true") return;
+  const collectButton = document.getElementById("collectQuartzBtn");
+  const upgradeButton = document.getElementById("upgradeQuartzBtn");
 
-      const task = async () => {
-        const { data, error } = await db.rpc("mine_gemstone", {
-          p_gemstone_id: button.dataset.id
-        });
-        if (error) {
-          showMessage(homeMessage, error.message);
-          showGlobalToast?.(error.message, "error");
-          return;
-        }
+  collectButton.onclick = async () => {
+    const task = async () => {
+      const { data, error } = await db.rpc("collect_quartz");
+      if (error) throw error;
 
-        const amount = Number(data || 0);
-        const text = `Mining complete. You collected ${amount.toLocaleString()} materials.`;
-        showMessage(homeMessage, text, true);
-        showGlobalToast?.(text, "success");
-        await render();
-      };
+      const collected = Number(data || 0);
+      showMessage(homeMessage, `Collected ${collected.toLocaleString()} Quartz.`, true);
+      showGlobalToast?.(`+${collected.toLocaleString()} Quartz collected`, "success");
+      await render();
+    };
 
+    try {
       if (window.runButtonTask) {
-        await runButtonTask(button, task, "Mining gemstone…");
+        await runButtonTask(collectButton, task, "Collecting Quartz…");
       } else {
-        button.disabled = true;
         await task();
       }
-    });
-  });
+    } catch (error) {
+      showMessage(homeMessage, error.message);
+      showGlobalToast?.(error.message, "error");
+    }
+  };
 
-  document.querySelectorAll(".unlock-btn:not(:disabled)").forEach(button => {
-    button.addEventListener("click", async () => {
-      if (!confirm("Use the required materials to unlock this gemstone mine?")) return;
+  upgradeButton.disabled = balance < upgradeCost;
+  upgradeButton.textContent = balance >= upgradeCost
+    ? `Upgrade for ${upgradeCost.toLocaleString()}`
+    : `Need ${upgradeCost.toLocaleString()} Quartz`;
 
-      const task = async () => {
-        const { error } = await db.rpc("unlock_gemstone_with_materials", {
-          p_gemstone_id: button.dataset.id
-        });
-        if (error) {
-          showMessage(homeMessage, error.message);
-          showGlobalToast?.(error.message, "error");
-          return;
-        }
+  upgradeButton.onclick = async () => {
+    if (!confirm(`Spend ${upgradeCost.toLocaleString()} Quartz to upgrade the mine?`)) return;
 
-        showMessage(homeMessage, "Gemstone mine unlocked. You can mine immediately.", true);
-        showGlobalToast?.("Mine unlocked successfully.", "success");
-        await render();
-      };
+    const task = async () => {
+      const { data, error } = await db.rpc("upgrade_quartz_mine");
+      if (error) throw error;
 
+      const newLevel = Number(data || level + 1);
+      showMessage(homeMessage, `Quartz Mine upgraded to level ${newLevel}.`, true);
+      showGlobalToast?.(`Quartz Mine reached level ${newLevel}`, "success");
+      await render();
+    };
+
+    try {
       if (window.runButtonTask) {
-        await runButtonTask(button, task, "Unlocking mine…");
+        await runButtonTask(upgradeButton, task, "Upgrading Quartz Mine…");
       } else {
-        button.disabled = true;
         await task();
       }
-    });
-  });
+    } catch (error) {
+      showMessage(homeMessage, error.message);
+      showGlobalToast?.(error.message, "error");
+    }
+  };
 }
 
 function ownedCard(m) {

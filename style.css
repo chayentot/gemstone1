@@ -1826,289 +1826,341 @@ button.is-loading::after,
 
 
 /* =========================================================
-   V25 GEMSTONE MINING PROGRESSION
+   V26 QUARTZ IDLE MINE
    ========================================================= */
 
-.home-section {
+.mine-hero {
+  margin-bottom: 18px;
+}
+
+.valley-board {
   margin-top: 20px;
-}
-
-.section-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.section-heading h2 {
-  margin: 2px 0 0;
-}
-
-.progression-help {
-  color: var(--muted, #687080);
-  font-size: .78rem;
-}
-
-.mining-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.mine-card {
   overflow: hidden;
-  border: 1px solid rgba(120,120,140,.18);
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 9px 25px rgba(28,39,64,.07);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(133, 207, 255, .18), transparent 26%),
+    radial-gradient(circle at 80% 76%, rgba(108, 60, 255, .14), transparent 25%),
+    linear-gradient(180deg, #17354c 0%, #174a48 48%, #205847 100%);
+  border: 1px solid rgba(15, 36, 50, .26);
 }
 
-.mine-card.locked {
+.valley-scene {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  min-height: 760px;
+  padding: 30px 18px 38px;
+  isolation: isolate;
+}
+
+.valley-scene::before,
+.valley-scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  opacity: .34;
+  background-image:
+    radial-gradient(circle, rgba(238, 225, 255, .68) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(69, 196, 149, .9) 0 3px, transparent 4px);
+  background-size: 54px 54px, 83px 83px;
+  background-position: 0 0, 19px 28px;
+}
+
+.valley-road {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: -1;
+  width: 92px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #50485f 0 8%, #786c83 8% 92%, #50485f 92%);
+  box-shadow: inset 10px 0 rgba(255,255,255,.05), inset -10px 0 rgba(0,0,0,.12);
+}
+
+.valley-road::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  border-left: 4px dashed rgba(255,255,255,.42);
+  transform: translateX(-50%);
+}
+
+.mine-building {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(190px, 280px) minmax(280px, 430px);
+  gap: 16px;
+  width: min(780px, 100%);
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(247, 250, 252, .97);
+  border: 2px solid rgba(255,255,255,.7);
+  box-shadow: 0 18px 35px rgba(6, 22, 28, .24);
+}
+
+.active-building {
+  margin-top: 22px;
+}
+
+.locked-building {
+  max-width: 620px;
   opacity: .82;
 }
 
-.mine-card.membership-unlocked {
-  border-color: rgba(108,60,255,.48);
-  box-shadow: 0 0 0 2px rgba(108,60,255,.09), 0 9px 25px rgba(28,39,64,.08);
-}
-
-.mine-image {
+.mine-building-art {
   position: relative;
-  height: 158px;
+  min-height: 210px;
   overflow: hidden;
-  background: #eceaf5;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #b9e7f2, #8bcbbd);
 }
 
-.mine-image img {
+.mine-building-art img {
   width: 100%;
   height: 100%;
+  min-height: 210px;
   object-fit: cover;
 }
 
-.mine-card.locked .mine-image img {
-  filter: grayscale(.72) brightness(.72);
-}
-
-.mine-level,
-.mine-lock-badge {
+.building-level,
+.building-lock {
   position: absolute;
-  top: 9px;
-  padding: 5px 8px;
+  top: 10px;
+  right: 10px;
+  padding: 6px 10px;
   border-radius: 999px;
-  color: #fff;
-  background: rgba(22,28,42,.82);
-  font-size: .65rem;
+  background: #6c3cff;
+  color: white;
+  font-size: .72rem;
   font-weight: 800;
 }
 
-.mine-level { left: 9px; }
-.mine-lock-badge { right: 9px; }
-
-.membership-unlocked .mine-lock-badge {
-  background: linear-gradient(135deg, #6c3cff, #a63cff);
+.building-lock {
+  background: rgba(21, 29, 42, .82);
 }
 
-.mine-body {
-  padding: 13px;
+.mine-building-panel {
+  align-self: center;
+  min-width: 0;
 }
 
-.mine-title {
+.mine-building-heading {
   display: flex;
   justify-content: space-between;
-  gap: 8px;
+  gap: 10px;
   align-items: start;
 }
 
-.mine-title h3 {
-  margin: 0;
-  font-size: 1.05rem;
+.mine-building-heading h2,
+.mine-building-panel h2 {
+  margin: 2px 0 0;
 }
 
-.mine-title small {
-  color: #6c3cff;
-  text-align: right;
-  font-size: .65rem;
-  font-weight: 750;
+.mine-online {
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #daf8e8;
+  color: #157f5b;
+  font-size: .7rem;
+  font-weight: 800;
 }
 
-.mine-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px;
-  margin: 11px 0;
+.mine-storage {
+  margin: 16px 0 12px;
 }
 
-.mine-stats div,
-.mine-requirement {
-  padding: 8px;
-  border-radius: 11px;
-  background: #f5f4fa;
+.mine-storage-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+  font-size: .78rem;
 }
 
-.mine-stats span,
-.mine-requirement span {
+.mine-storage-track {
+  height: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e1e5ec;
+}
+
+.mine-storage-track span {
   display: block;
-  color: var(--muted, #687080);
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6c3cff, #a55eff);
+  transition: width .35s linear;
+}
+
+.mine-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.mine-metrics div {
+  padding: 10px;
+  border-radius: 12px;
+  background: #f1eff9;
+}
+
+.mine-metrics span {
+  display: block;
+  color: #687080;
   font-size: .66rem;
 }
 
-.mine-stats strong,
-.mine-requirement strong {
+.mine-metrics strong {
   display: block;
-  margin-top: 2px;
-  font-size: .84rem;
+  margin-top: 3px;
+  font-size: .9rem;
 }
 
-.mine-requirement {
-  margin-bottom: 9px;
-  background: #fff4e3;
+.mine-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
 
-.mine-requirement.met {
-  background: #e9f8f1;
-}
-
-.mine-status {
-  margin: 8px 0;
-  padding: 7px;
-  border-radius: 9px;
-  background: #e9f8f1;
-  color: #157f5b;
-  font-size: .72rem;
-  font-weight: 750;
-  text-align: center;
-}
-
-.mine-status.waiting {
-  background: #fff4df;
-  color: #8b5d05;
-}
-
-.mine-status.locked {
-  background: #f1f2f5;
-  color: #687080;
-}
-
-.mine-card button {
+.mine-actions button {
   width: 100%;
 }
 
-.mine-membership-link {
-  display: block;
-  margin-top: 8px;
-  color: #6c3cff;
-  font-size: .69rem;
-  font-weight: 750;
-  text-align: center;
+.mine-upgrade-info {
+  margin: 9px 0 0;
+  color: #687080;
+  font-size: .72rem;
+  line-height: 1.35;
+}
+
+.path-connector {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  height: 78px;
+}
+
+.path-connector span {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  background: #b8adca;
+  border: 2px solid rgba(255,255,255,.68);
+}
+
+.membership-rewards-section {
+  margin-top: 24px;
+}
+
+.section-heading {
+  margin-bottom: 12px;
 }
 
 @media (max-width: 620px) {
-  .home-section {
-    margin-top: 14px;
+  .valley-board {
+    margin-top: 12px;
+    border-radius: 16px;
   }
 
-  .section-heading {
-    align-items: center;
+  .valley-scene {
+    min-height: 700px;
+    padding: 18px 8px 28px;
+  }
+
+  .valley-road {
+    width: 54px;
+  }
+
+  .mine-building {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    width: calc(100% - 8px);
+    padding: 8px;
+    border-radius: 15px;
+  }
+
+  .active-building {
+    margin-top: 10px;
+  }
+
+  .mine-building-art,
+  .mine-building-art img {
+    min-height: 142px;
+    height: 142px;
+  }
+
+  .mine-building-heading h2,
+  .mine-building-panel h2 {
+    font-size: 1rem;
+  }
+
+  .mine-online {
+    padding: 4px 7px;
+    font-size: .57rem;
+  }
+
+  .mine-storage {
+    margin: 10px 0 8px;
+  }
+
+  .mine-storage-label {
+    font-size: .65rem;
+  }
+
+  .mine-storage-track {
+    height: 11px;
+  }
+
+  .mine-metrics {
+    gap: 4px;
     margin-bottom: 8px;
   }
 
-  .section-heading h2 {
-    font-size: 1.05rem;
+  .mine-metrics div {
+    padding: 7px 5px;
+    border-radius: 9px;
   }
 
-  .progression-help {
-    max-width: 110px;
-    font-size: .58rem;
-    text-align: right;
-  }
-
-  .mining-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 7px;
-  }
-
-  .mine-card {
-    min-width: 0;
-    border-radius: 13px;
-  }
-
-  .mine-image {
-    height: 94px;
-  }
-
-  .mine-level,
-  .mine-lock-badge {
-    top: 5px;
-    padding: 3px 5px;
-    font-size: .48rem;
-  }
-
-  .mine-level { left: 5px; }
-  .mine-lock-badge { right: 5px; }
-
-  .mine-body {
-    padding: 8px 6px;
-  }
-
-  .mine-title {
-    display: block;
-  }
-
-  .mine-title h3 {
-    font-size: .78rem;
-    line-height: 1.15;
-  }
-
-  .mine-title small {
-    display: block;
-    margin-top: 2px;
+  .mine-metrics span {
     font-size: .5rem;
-    text-align: left;
   }
 
-  .mine-stats {
-    gap: 4px;
-    margin: 7px 0;
+  .mine-metrics strong {
+    font-size: .69rem;
   }
 
-  .mine-stats div,
-  .mine-requirement {
-    padding: 5px;
-    border-radius: 8px;
+  .mine-actions {
+    gap: 5px;
   }
 
-  .mine-stats span,
-  .mine-requirement span {
-    font-size: .48rem;
+  .mine-actions button {
+    min-height: 38px;
+    padding: 7px 4px;
+    font-size: .62rem;
   }
 
-  .mine-stats strong,
-  .mine-requirement strong {
-    font-size: .61rem;
-    overflow-wrap: anywhere;
-  }
-
-  .mine-requirement {
-    margin-bottom: 6px;
-  }
-
-  .mine-status {
-    margin: 5px 0;
-    padding: 5px 3px;
-    font-size: .52rem;
-    line-height: 1.2;
-  }
-
-  .mine-card button {
-    min-height: 32px;
-    padding: 6px 3px;
+  .mine-upgrade-info {
     font-size: .56rem;
   }
 
-  .mine-membership-link {
-    margin-top: 5px;
-    font-size: .5rem;
-    line-height: 1.2;
+  .path-connector {
+    height: 56px;
+  }
+
+  .locked-building .mine-building-art {
+    display: none;
+  }
+
+  .locked-building {
+    width: 82%;
+    text-align: center;
   }
 }

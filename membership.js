@@ -42,7 +42,7 @@ function bindBuyButtons() {
         button.disabled = false;
         return;
       }
-      showMessage(message, "Purchase successful. This gemstone is unlocked and ready to mine and redeem immediately.", true);
+      showMessage(message, "Purchase successful. Your first 24-hour timer has started.", true);
       await loadMemberships();
     });
   });

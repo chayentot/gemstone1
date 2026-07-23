@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gemstone Membership</title>
-  <link rel="stylesheet" href="style.css?v=25">
+  <link rel="stylesheet" href="style.css?v=26">
 </head>
 <body>
   <header class="topbar">
@@ -48,29 +48,89 @@
     </section>
 
     <section id="dashboard" class="hidden">
-      <div class="hero">
+      <div class="hero mine-hero">
         <div>
           <p class="eyebrow">GEMSTONE VALLEY</p>
-          <h1>Mine and unlock gemstones</h1>
-          <p class="muted">Regular players unlock each mine using materials. Membership owners open their purchased gemstone instantly.</p>
+          <h1>Build your mining path</h1>
+          <p class="muted">Quartz is free. Produce it automatically, collect it, and upgrade the mine to increase speed and storage.</p>
         </div>
         <a class="primary button-link" href="membership.html">Browse memberships</a>
       </div>
 
       <div id="summaryCards" class="summary-grid"></div>
 
-      <section class="home-section mining-section">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">MINING PROGRESSION</p>
-            <h2>Gemstone mines</h2>
+      <section class="valley-board" aria-labelledby="quartzMineTitle">
+        <div class="valley-scene">
+          <div class="valley-road" aria-hidden="true"></div>
+
+          <article id="quartzMineCard" class="mine-building active-building">
+            <div class="mine-building-art">
+              <img src="quartz.webp" alt="Quartz mining building">
+              <span class="building-level" id="quartzLevelBadge">Level 1</span>
+            </div>
+
+            <div class="mine-building-panel">
+              <div class="mine-building-heading">
+                <div>
+                  <p class="eyebrow">FREE STARTER MINE</p>
+                  <h2 id="quartzMineTitle">Quartz Mine</h2>
+                </div>
+                <span class="mine-online">Producing</span>
+              </div>
+
+              <div class="mine-storage">
+                <div class="mine-storage-label">
+                  <span>Uncollected Quartz</span>
+                  <strong id="quartzStorageText">0 / 3,600</strong>
+                </div>
+                <div class="mine-storage-track" aria-hidden="true">
+                  <span id="quartzStorageBar"></span>
+                </div>
+              </div>
+
+              <div class="mine-metrics">
+                <div>
+                  <span>Production</span>
+                  <strong id="quartzRate">1 / sec</strong>
+                </div>
+                <div>
+                  <span>Capacity</span>
+                  <strong id="quartzCapacity">3,600</strong>
+                </div>
+                <div>
+                  <span>Collected</span>
+                  <strong id="quartzBalance">0</strong>
+                </div>
+              </div>
+
+              <div class="mine-actions">
+                <button id="collectQuartzBtn" class="primary" type="button">Collect Quartz</button>
+                <button id="upgradeQuartzBtn" class="secondary" type="button">Upgrade mine</button>
+              </div>
+
+              <p id="quartzUpgradeInfo" class="mine-upgrade-info">Next upgrade costs 1,000 Quartz.</p>
+            </div>
+          </article>
+
+          <div class="path-connector" aria-hidden="true">
+            <span></span><span></span><span></span>
           </div>
-          <span class="progression-help">🔒 Materials or membership</span>
+
+          <article class="mine-building locked-building">
+            <div class="mine-building-art">
+              <img src="amethyst.webp" alt="Locked Amethyst mining building">
+              <span class="building-lock">Locked</span>
+            </div>
+            <div class="mine-building-panel compact">
+              <p class="eyebrow">NEXT AREA</p>
+              <h2>Amethyst Mine</h2>
+              <p class="muted">The Amethyst mechanics will be added after the Quartz economy is tested.</p>
+            </div>
+          </article>
         </div>
-        <div id="miningGemstones" class="mining-grid"></div>
       </section>
 
-      <section class="home-section rewards-section">
+      <section class="membership-rewards-section">
         <div class="section-heading">
           <div>
             <p class="eyebrow">MEMBERSHIP REWARDS</p>
@@ -98,6 +158,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="common.js?v=23"></script>
-  <script src="home.js?v=25"></script>
+  <script src="home.js?v=26"></script>
 </body>
 </html>
